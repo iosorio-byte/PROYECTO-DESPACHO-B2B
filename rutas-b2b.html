@@ -170,6 +170,7 @@
   .badge-cargo{background:var(--type-cargo-soft); color:var(--type-cargo);}
   .badge-none{background:var(--type-none-soft); color:var(--type-none);}
   .badge-mixto{background:var(--surface-sunken); color:var(--text-muted); border:1px dashed var(--border-strong);}
+  .badge-overdue{background:var(--danger-soft); color:var(--danger);}
 
   .stat-row{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-bottom:20px;}
   .stat-tile{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px 16px; box-shadow:var(--shadow);}
@@ -346,9 +347,10 @@
               <option value="Cancelado"></option>
             </datalist>
           </div>
+          <div><label for="ma-dispatch-date">Fecha máxima de despacho</label><input type="date" id="ma-dispatch-date" /></div>
           <div><label for="ma-boxes">Cajas</label><input type="number" id="ma-boxes" min="0" step="1" /></div>
           <div><label for="ma-volume">Volumen (m³)</label><input type="number" id="ma-volume" min="0" step="0.01" /></div>
-          <div><label for="ma-value">Valor declarado (COP)</label><input type="number" id="ma-value" min="0" max="9999999" step="1" placeholder="Hasta 7 dígitos" /></div>
+          <div><label for="ma-value">Valor declarado (COP)</label><input type="number" id="ma-value" min="0" step="1" placeholder="Valor exacto en COP" /></div>
           <div>
             <label for="ma-type">Tipo de envío</label>
             <select id="ma-type">
@@ -400,7 +402,7 @@
         <table id="orders-table">
           <thead>
             <tr>
-              <th>N° Orden</th><th>Dirección</th><th>País</th><th>Ciudad</th><th>Seller</th><th>Bodega</th><th>Estado</th><th>Tipo</th>
+              <th>N° Orden</th><th>Dirección</th><th>País</th><th>Ciudad</th><th>Seller</th><th>Bodega</th><th>Estado</th><th>Fecha máx. despacho</th><th>Tipo</th>
               <th class="num">Cajas</th><th class="num">Volumen m³</th><th class="num">Valor declarado</th>
               <th>Acciones</th>
             </tr>
@@ -512,10 +514,9 @@
     dec = dec==null?0:dec;
     return Number(n||0).toLocaleString("es-ES", {minimumFractionDigits:dec, maximumFractionDigits:dec});
   }
-  var MAX_DECLARED_VALUE = 9999999;
   function clampDeclaredValue(n){
     n = Math.round(Number(n) || 0);
-    return Math.max(0, Math.min(MAX_DECLARED_VALUE, n));
+    return Math.max(0, n);
   }
   function formatMoney(n){
     return appState.currency + Number(n||0).toLocaleString("es-CO", {maximumFractionDigits:0});
@@ -530,6 +531,21 @@
   }
   function toTitleCase(s){
     return String(s||"").replace(/\b\w/g, function(c){ return c.toUpperCase(); });
+  }
+  var CLOSED_STATUSES = ["despachado","entregado","cancelado"];
+  function isOverdueDispatch(o){
+    if(!o.maxDispatchDate) return false;
+    if(CLOSED_STATUSES.indexOf(String(o.status||"").trim().toLowerCase()) > -1) return false;
+    var d = new Date(o.maxDispatchDate + "T00:00:00");
+    if(isNaN(d.getTime())) return false;
+    var today = new Date(); today.setHours(0,0,0,0);
+    return d.getTime() < today.getTime();
+  }
+  function formatDispatchDateCell(o){
+    if(!o.maxDispatchDate) return "";
+    var label = escapeHtml(o.maxDispatchDate);
+    if(isOverdueDispatch(o)) return '<span class="badge badge-overdue" title="Fecha de despacho vencida">⚠ ' + label + '</span>';
+    return label;
   }
 
   // ---------- number / type parsing ----------
@@ -934,6 +950,7 @@
         '<td>' + escapeHtml(o.seller) + '</td>' +
         '<td>' + escapeHtml(o.warehouse) + '</td>' +
         '<td>' + (o.status ? '<span class="chip">' + escapeHtml(o.status) + '</span>' : '') + '</td>' +
+        '<td>' + formatDispatchDateCell(o) + '</td>' +
         '<td><span class="badge ' + typeBadgeClass(o.type) + '">' + escapeHtml(typeBadgeLabel(o.type)) + '</span></td>' +
         '<td class="num">' + formatNum(o.boxes) + '</td>' +
         '<td class="num">' + formatNum(o.volume,2) + '</td>' +
@@ -955,12 +972,13 @@
       '<td><input class="row-edit-input" type="text" value="' + escapeHtml(order.seller) + '" data-f="seller"></td>' +
       '<td><input class="row-edit-input" type="text" value="' + escapeHtml(order.warehouse) + '" data-f="warehouse"></td>' +
       '<td><input class="row-edit-input" type="text" value="' + escapeHtml(order.status) + '" data-f="status" list="status-suggestions"></td>' +
+      '<td><input class="row-edit-input" type="date" value="' + escapeHtml(order.maxDispatchDate||"") + '" data-f="maxDispatchDate"></td>' +
       '<td><select class="row-edit-input" data-f="type">' + TYPES.map(function(t){
         return '<option value="' + t + '"' + (t===order.type?' selected':'') + '>' + t + '</option>';
       }).join("") + '</select></td>' +
       '<td class="num"><input class="row-edit-input" type="number" min="0" step="1" value="' + order.boxes + '" data-f="boxes"></td>' +
       '<td class="num"><input class="row-edit-input" type="number" min="0" step="0.01" value="' + order.volume + '" data-f="volume"></td>' +
-      '<td class="num"><input class="row-edit-input" type="number" min="0" max="9999999" step="1" value="' + order.value + '" data-f="value"></td>' +
+      '<td class="num"><input class="row-edit-input" type="number" min="0" step="1" value="' + order.value + '" data-f="value"></td>' +
       '<td class="actions-cell"><button class="btn btn-sm btn-primary btn-save">Guardar</button><button class="btn btn-sm btn-cancel">Cancelar</button></td>';
     tr.querySelector(".btn-save").addEventListener("click", function(){
       order.orderNumber = tr.querySelector('[data-f=orderNumber]').value.trim();
@@ -970,6 +988,7 @@
       order.seller = tr.querySelector('[data-f=seller]').value.trim();
       order.warehouse = tr.querySelector('[data-f=warehouse]').value.trim();
       order.status = tr.querySelector('[data-f=status]').value.trim();
+      order.maxDispatchDate = tr.querySelector('[data-f=maxDispatchDate]').value;
       order.type = tr.querySelector('[data-f=type]').value;
       order.boxes = parseNumber(tr.querySelector('[data-f=boxes]').value);
       order.volume = parseNumber(tr.querySelector('[data-f=volume]').value);
@@ -1023,12 +1042,13 @@
       seller: document.getElementById("ma-seller").value.trim(),
       warehouse: document.getElementById("ma-warehouse").value.trim(),
       status: document.getElementById("ma-status").value.trim(),
+      maxDispatchDate: document.getElementById("ma-dispatch-date").value,
       boxes: parseNumber(document.getElementById("ma-boxes").value),
       volume: parseNumber(document.getElementById("ma-volume").value),
       value: clampDeclaredValue(parseNumber(document.getElementById("ma-value").value)),
       type: document.getElementById("ma-type").value
     });
-    ["ma-order","ma-address","ma-country","ma-city","ma-seller","ma-warehouse","ma-status","ma-boxes","ma-volume","ma-value"].forEach(function(id){ document.getElementById(id).value = ""; });
+    ["ma-order","ma-address","ma-country","ma-city","ma-seller","ma-warehouse","ma-status","ma-dispatch-date","ma-boxes","ma-volume","ma-value"].forEach(function(id){ document.getElementById(id).value = ""; });
     saveState(); renderOrdersTable();
     toast("Orden agregada", "success");
   });
@@ -1042,6 +1062,7 @@
     {key:"seller", label:"Seller", keywords:["seller","vendedor"]},
     {key:"warehouse", label:"Bodega", keywords:["bodega","warehouse","almacen","almacén"]},
     {key:"status", label:"Estado de la orden", keywords:["estado","status"]},
+    {key:"maxDispatchDate", label:"Fecha máxima de despacho", keywords:["despacho","limite","límite","vencimiento","dispatch"]},
     {key:"boxes", label:"Cantidad de cajas", keywords:["caja","bulto","box","unidades","cant"]},
     {key:"volume", label:"Volumen (m³)", keywords:["volu","m3","m³","cbm"]},
     {key:"value", label:"Valor declarado", keywords:["valor","declarado","monto","importe","price","total"]},
@@ -1332,7 +1353,7 @@
       toast("Debes mapear al menos N° de orden y Dirección", "danger"); return;
     }
     var replace = document.getElementById("import-replace").checked;
-    var added = 0, updated = 0, skipped = 0, unrecognizedType = 0, valueCapped = 0;
+    var added = 0, updated = 0, skipped = 0, unrecognizedType = 0;
     pendingImport.rows.forEach(function(r){
       var orderNumber = mapping.orderNumber>-1 ? String(r[mapping.orderNumber]||"").trim() : "";
       var address = mapping.address>-1 ? String(r[mapping.address]||"").trim() : "";
@@ -1342,7 +1363,6 @@
       if(typeRaw && !type) unrecognizedType++;
       var rawValue = mapping.value>-1 ? parseNumber(r[mapping.value]) : 0;
       var cappedValue = clampDeclaredValue(rawValue);
-      if(cappedValue !== Math.round(rawValue)) valueCapped++;
       var rec = {
         orderNumber: orderNumber, address: address,
         country: mapping.country>-1 ? String(r[mapping.country]||"").trim() : "",
@@ -1350,6 +1370,7 @@
         seller: mapping.seller>-1 ? String(r[mapping.seller]||"").trim() : "",
         warehouse: mapping.warehouse>-1 ? String(r[mapping.warehouse]||"").trim() : "",
         status: mapping.status>-1 ? String(r[mapping.status]||"").trim() : "",
+        maxDispatchDate: mapping.maxDispatchDate>-1 ? String(r[mapping.maxDispatchDate]||"").trim() : "",
         boxes: mapping.boxes>-1 ? parseNumber(r[mapping.boxes]) : 0,
         volume: mapping.volume>-1 ? parseNumber(r[mapping.volume]) : 0,
         value: cappedValue,
@@ -1369,7 +1390,6 @@
     var msg = added + " agregadas, " + updated + " actualizadas" + (skipped ? ", " + skipped + " omitidas por datos incompletos" : "");
     toast(msg, "success");
     if(unrecognizedType) toast(unrecognizedType + " filas con tipo de envío no reconocido quedaron como 'Sin tipo'", "warn");
-    if(valueCapped) toast(valueCapped + " valores declarados superaban 7 dígitos y se ajustaron al máximo ($" + MAX_DECLARED_VALUE.toLocaleString("es-CO") + ")", "warn");
     pendingImport = null;
     document.getElementById("mapping-card").style.display = "none";
     document.getElementById("paste-area").value = "";

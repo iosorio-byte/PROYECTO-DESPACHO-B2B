@@ -350,7 +350,7 @@
           <div><label for="ma-dispatch-date">Fecha máxima de despacho</label><input type="date" id="ma-dispatch-date" /></div>
           <div><label for="ma-boxes">Cajas</label><input type="number" id="ma-boxes" min="0" step="1" /></div>
           <div><label for="ma-volume">Volumen (m³)</label><input type="number" id="ma-volume" min="0" step="0.01" /></div>
-          <div><label for="ma-value">Valor declarado (COP)</label><input type="number" id="ma-value" min="0" max="9999999" step="1" placeholder="Hasta 7 dígitos" /></div>
+          <div><label for="ma-value">Valor declarado (COP)</label><input type="number" id="ma-value" min="0" step="1" placeholder="Valor exacto en COP" /></div>
           <div>
             <label for="ma-type">Tipo de envío</label>
             <select id="ma-type">
@@ -514,10 +514,9 @@
     dec = dec==null?0:dec;
     return Number(n||0).toLocaleString("es-ES", {minimumFractionDigits:dec, maximumFractionDigits:dec});
   }
-  var MAX_DECLARED_VALUE = 9999999;
   function clampDeclaredValue(n){
     n = Math.round(Number(n) || 0);
-    return Math.max(0, Math.min(MAX_DECLARED_VALUE, n));
+    return Math.max(0, n);
   }
   function formatMoney(n){
     return appState.currency + Number(n||0).toLocaleString("es-CO", {maximumFractionDigits:0});
@@ -979,7 +978,7 @@
       }).join("") + '</select></td>' +
       '<td class="num"><input class="row-edit-input" type="number" min="0" step="1" value="' + order.boxes + '" data-f="boxes"></td>' +
       '<td class="num"><input class="row-edit-input" type="number" min="0" step="0.01" value="' + order.volume + '" data-f="volume"></td>' +
-      '<td class="num"><input class="row-edit-input" type="number" min="0" max="9999999" step="1" value="' + order.value + '" data-f="value"></td>' +
+      '<td class="num"><input class="row-edit-input" type="number" min="0" step="1" value="' + order.value + '" data-f="value"></td>' +
       '<td class="actions-cell"><button class="btn btn-sm btn-primary btn-save">Guardar</button><button class="btn btn-sm btn-cancel">Cancelar</button></td>';
     tr.querySelector(".btn-save").addEventListener("click", function(){
       order.orderNumber = tr.querySelector('[data-f=orderNumber]').value.trim();
@@ -1354,7 +1353,7 @@
       toast("Debes mapear al menos N° de orden y Dirección", "danger"); return;
     }
     var replace = document.getElementById("import-replace").checked;
-    var added = 0, updated = 0, skipped = 0, unrecognizedType = 0, valueCapped = 0;
+    var added = 0, updated = 0, skipped = 0, unrecognizedType = 0;
     pendingImport.rows.forEach(function(r){
       var orderNumber = mapping.orderNumber>-1 ? String(r[mapping.orderNumber]||"").trim() : "";
       var address = mapping.address>-1 ? String(r[mapping.address]||"").trim() : "";
@@ -1364,7 +1363,6 @@
       if(typeRaw && !type) unrecognizedType++;
       var rawValue = mapping.value>-1 ? parseNumber(r[mapping.value]) : 0;
       var cappedValue = clampDeclaredValue(rawValue);
-      if(cappedValue !== Math.round(rawValue)) valueCapped++;
       var rec = {
         orderNumber: orderNumber, address: address,
         country: mapping.country>-1 ? String(r[mapping.country]||"").trim() : "",
@@ -1392,7 +1390,6 @@
     var msg = added + " agregadas, " + updated + " actualizadas" + (skipped ? ", " + skipped + " omitidas por datos incompletos" : "");
     toast(msg, "success");
     if(unrecognizedType) toast(unrecognizedType + " filas con tipo de envío no reconocido quedaron como 'Sin tipo'", "warn");
-    if(valueCapped) toast(valueCapped + " valores declarados superaban 7 dígitos y se ajustaron al máximo ($" + MAX_DECLARED_VALUE.toLocaleString("es-CO") + ")", "warn");
     pendingImport = null;
     document.getElementById("mapping-card").style.display = "none";
     document.getElementById("paste-area").value = "";
