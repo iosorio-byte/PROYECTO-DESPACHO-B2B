@@ -1,0 +1,1808 @@
+<title>Rutas B2B</title>
+<style>
+  :root{
+    --bg:#ECDBFA;
+    --surface:#FFFFFF;
+    --surface-alt:#E1C7F5;
+    --surface-sunken:#D6B3F0;
+    --border:#CDA0EA;
+    --border-strong:#B37ADD;
+    --text:#1A2036;
+    --text-muted:#5B6584;
+    --text-faint:#8791AC;
+    --accent:#2F97DB;
+    --accent-strong:#1E74B0;
+    --accent-soft:#DCEFFC;
+    --accent2:#7C4FE0;
+    --accent2-strong:#5E36B8;
+    --accent2-soft:#ECE3FB;
+    --warn:#B5651D;
+    --warn-soft:#F3E1CC;
+    --danger:#C0392B;
+    --danger-soft:#F7DEDC;
+    --success:#1F9D6C;
+    --success-soft:#DAF3E7;
+    --type-local:var(--accent); --type-local-soft:var(--accent-soft);
+    --type-dedicado:var(--accent2); --type-dedicado-soft:var(--accent2-soft);
+    --type-cargo:#B4711F; --type-cargo-soft:#F5E3C8;
+    --type-none:#6B7488; --type-none-soft:#E7ECF6;
+    --shadow:0 1px 2px rgba(26,32,54,0.07), 0 4px 14px rgba(26,32,54,0.08);
+    --radius:10px;
+    --radius-sm:6px;
+    --font-display:"Segoe UI Semibold","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+    --font-body:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+    --font-mono:Consolas,"SFMono-Regular","Cascadia Mono","Liberation Mono",Menlo,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0E1220; --surface:#161C34; --surface-alt:#1E2544; --surface-sunken:#0B0F1C;
+      --border:#2B3358; --border-strong:#3C4870;
+      --text:#E9EDFB; --text-muted:#9AA3C4; --text-faint:#6E7796;
+      --accent:#5FB4EE; --accent-strong:#8FCDF6; --accent-soft:#173650;
+      --accent2:#B79AF5; --accent2-strong:#CDB8F8; --accent2-soft:#2A2150;
+      --warn:#E0A050; --warn-soft:#3A2C18;
+      --danger:#E58A82; --danger-soft:#3D2321;
+      --success:#5FCB9A; --success-soft:#123322;
+      --type-local:var(--accent); --type-local-soft:var(--accent-soft);
+      --type-dedicado:var(--accent2); --type-dedicado-soft:var(--accent2-soft);
+      --type-cargo:#D9A868; --type-cargo-soft:#3A2A14;
+      --type-none:#9AA3C4; --type-none-soft:#232A44;
+      --shadow:0 1px 2px rgba(0,0,0,0.4), 0 4px 14px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0E1220; --surface:#161C34; --surface-alt:#1E2544; --surface-sunken:#0B0F1C;
+    --border:#2B3358; --border-strong:#3C4870;
+    --text:#E9EDFB; --text-muted:#9AA3C4; --text-faint:#6E7796;
+    --accent:#5FB4EE; --accent-strong:#8FCDF6; --accent-soft:#173650;
+    --accent2:#B79AF5; --accent2-strong:#CDB8F8; --accent2-soft:#2A2150;
+    --warn:#E0A050; --warn-soft:#3A2C18;
+    --danger:#E58A82; --danger-soft:#3D2321;
+    --success:#5FCB9A; --success-soft:#123322;
+    --type-local:var(--accent); --type-local-soft:var(--accent-soft);
+    --type-dedicado:var(--accent2); --type-dedicado-soft:var(--accent2-soft);
+    --type-cargo:#D9A868; --type-cargo-soft:#3A2A14;
+    --type-none:#9AA3C4; --type-none-soft:#232A44;
+    --shadow:0 1px 2px rgba(0,0,0,0.4), 0 4px 14px rgba(0,0,0,0.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:var(--font-body); font-size:14.5px; line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:var(--font-display); text-wrap:balance; margin:0;}
+  ::selection{background:var(--accent-soft); color:var(--accent-strong);}
+
+  .app{max-width:1180px; margin:0 auto; padding:0 20px 64px;}
+
+  .topbar{
+    position:sticky; top:0; z-index:20; background:var(--surface);
+    border-bottom:1px solid var(--border);
+    padding:14px 20px; margin:0 -20px 28px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  }
+  .brand{display:flex; align-items:center; gap:10px;}
+  .brand-icon{color:var(--accent); flex:none;}
+  .brand-text{display:flex; flex-direction:column; gap:1px;}
+  .brand-eyebrow{font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); font-weight:600;}
+  .brand-name{font-size:18px; font-weight:700; letter-spacing:-.01em;}
+
+  .tabs{display:flex; gap:4px; background:var(--surface-alt); padding:4px; border-radius:999px; border:1px solid var(--border);}
+  .tab-btn{
+    appearance:none; border:none; background:transparent; color:var(--text-muted);
+    font-family:var(--font-body); font-size:13px; font-weight:600; padding:8px 16px;
+    border-radius:999px; cursor:pointer; transition:background .15s, color .15s;
+  }
+  .tab-btn:hover{color:var(--text);}
+  .tab-btn[aria-selected="true"]{background:var(--accent); color:#fff;}
+  .tab-btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block; animation:fadein .18s ease-out;}
+  @media (prefers-reduced-motion: reduce){ .tab-panel.active{animation:none;} }
+  @keyframes fadein{from{opacity:0; transform:translateY(2px);} to{opacity:1; transform:none;}}
+
+  .page-head{margin-bottom:20px;}
+  .page-title{font-size:22px; font-weight:700; letter-spacing:-.01em;}
+  .page-sub{color:var(--text-muted); font-size:13.5px; margin-top:4px; max-width:62ch;}
+
+  .card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:20px; margin-bottom:20px;
+  }
+  .card-title{font-size:15px; font-weight:700; margin-bottom:2px;}
+  .card-hint{font-size:12.5px; color:var(--text-muted); margin-bottom:14px;}
+  .stack{display:flex; flex-direction:column; gap:14px;}
+  .row{display:flex; gap:14px; flex-wrap:wrap;}
+  .row > *{flex:1 1 200px;}
+
+  label{display:block; font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:5px;}
+  input[type=text], input[type=number], input[type=file], select, textarea{
+    width:100%; font-family:var(--font-body); font-size:13.5px; color:var(--text);
+    background:var(--surface); border:1px solid var(--border-strong); border-radius:var(--radius-sm);
+    padding:8px 10px; transition:border-color .12s, box-shadow .12s;
+  }
+  input:focus, select:focus, textarea:focus{
+    outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft);
+  }
+  textarea{font-family:var(--font-mono); font-size:12.5px; resize:vertical; min-height:110px;}
+  input[type=checkbox]{width:auto; accent-color:var(--accent);}
+  .check-row{display:flex; align-items:center; gap:7px;}
+  .check-row label{margin:0; font-weight:500; color:var(--text);}
+
+  .btn{
+    appearance:none; border:1px solid var(--border-strong); background:var(--surface);
+    color:var(--text); font-family:var(--font-body); font-size:13px; font-weight:600;
+    padding:9px 16px; border-radius:var(--radius-sm); cursor:pointer; transition:filter .12s, background .12s;
+    white-space:nowrap;
+  }
+  .btn:hover{filter:brightness(0.97);}
+  :root[data-theme="dark"] .btn:hover, @media (prefers-color-scheme:dark){ .btn:hover{filter:brightness(1.15);} }
+  .btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .btn-primary{background:var(--accent); border-color:var(--accent); color:#fff;}
+  .btn-ghost{background:transparent; border-color:transparent;}
+  .btn-danger{color:var(--danger); border-color:var(--danger-soft); background:var(--danger-soft);}
+  .btn-sm{padding:5px 10px; font-size:12px;}
+  .btn[disabled]{opacity:.5; cursor:not-allowed;}
+
+  .table-wrap{overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius-sm);}
+  table{width:100%; border-collapse:collapse; min-width:640px;}
+  th{
+    text-align:left; font-size:10.5px; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--text-muted); background:var(--surface-alt); font-weight:700;
+    padding:9px 10px; border-bottom:1px solid var(--border-strong); white-space:nowrap;
+  }
+  td{padding:8px 10px; border-bottom:1px solid var(--border); font-size:13px; vertical-align:middle;}
+  tr:last-child td{border-bottom:none;}
+  td.num, th.num{text-align:right; font-variant-numeric:tabular-nums;}
+  td.mono{font-family:var(--font-mono); font-size:12.5px;}
+  tbody tr:hover{background:var(--surface-alt);}
+  tfoot td{font-weight:700; background:var(--surface-alt); border-top:1px solid var(--border-strong);}
+
+  .badge{
+    display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:999px;
+    font-size:11px; font-weight:700; letter-spacing:.01em; white-space:nowrap;
+  }
+  .badge-local{background:var(--type-local-soft); color:var(--type-local);}
+  .badge-dedicado{background:var(--type-dedicado-soft); color:var(--type-dedicado);}
+  .badge-cargo{background:var(--type-cargo-soft); color:var(--type-cargo);}
+  .badge-none{background:var(--type-none-soft); color:var(--type-none);}
+  .badge-mixto{background:var(--surface-sunken); color:var(--text-muted); border:1px dashed var(--border-strong);}
+  .badge-overdue{background:var(--danger-soft); color:var(--danger);}
+
+  .stat-row{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-bottom:20px;}
+  .stat-tile{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px 16px; box-shadow:var(--shadow);}
+  .stat-label{font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); font-weight:700;}
+  .stat-value{font-size:26px; font-weight:700; font-variant-numeric:tabular-nums; margin-top:4px; font-family:var(--font-display);}
+  .stat-value.warn{color:var(--warn);}
+  .stat-value.accent{color:var(--accent);}
+
+  .info-box{
+    display:flex; gap:10px; background:var(--surface-alt); border:1px solid var(--border);
+    border-radius:var(--radius-sm); padding:12px 14px; font-size:12.5px; color:var(--text-muted); margin-bottom:18px;
+  }
+  .info-box strong{color:var(--text);}
+
+  .route-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(360px,1fr)); gap:16px; margin-bottom:24px;}
+  .route-card{
+    background:var(--surface); border:1px solid var(--border); border-left:4px solid var(--accent);
+    border-radius:var(--radius); box-shadow:var(--shadow); padding:16px; display:flex; flex-direction:column; gap:10px;
+  }
+  .route-card.type-local{border-left-color:var(--accent);}
+  .route-card.type-dedicado{border-left-color:var(--accent2);}
+  .route-card.type-cargo{border-left-color:var(--type-cargo);}
+  .route-card.mixed{border-left-color:var(--text-faint);}
+  .route-head{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+  .route-title{font-size:15px; font-weight:700;}
+  .route-zone{font-size:12px; color:var(--text-muted); margin-top:2px;}
+  .route-chips{display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end;}
+  .chip{background:var(--surface-alt); border:1px solid var(--border); border-radius:999px; padding:3px 9px; font-size:11px; font-weight:600; color:var(--text-muted); white-space:nowrap;}
+  .provider-field{display:flex; align-items:center; gap:8px;}
+  .provider-field label{margin:0; white-space:nowrap;}
+  .move-select{font-size:11.5px; padding:4px 6px; max-width:130px;}
+  .route-actions{display:flex; justify-content:flex-end; gap:8px; margin-top:2px;}
+
+  .unassigned-panel{
+    background:var(--surface); border:1px solid var(--warn-soft); border-left:4px solid var(--warn);
+    border-radius:var(--radius); box-shadow:var(--shadow); padding:18px;
+  }
+  .unassigned-head{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap;}
+
+  .empty-state{
+    text-align:center; padding:48px 20px; color:var(--text-muted); border:1px dashed var(--border-strong);
+    border-radius:var(--radius); background:var(--surface-alt);
+  }
+  .empty-state strong{display:block; color:var(--text); font-size:15px; margin-bottom:4px;}
+
+  .mapping-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; margin-bottom:14px;}
+  .mapping-field{background:var(--surface-alt); border:1px solid var(--border); border-radius:var(--radius-sm); padding:10px;}
+
+  .row-edit-input{padding:5px 7px; font-size:12.5px;}
+
+  .toast-stack{position:fixed; bottom:18px; right:18px; z-index:100; display:flex; flex-direction:column; gap:8px; align-items:flex-end;}
+  .toast{
+    background:var(--text); color:var(--bg); padding:10px 16px; border-radius:var(--radius-sm);
+    font-size:13px; box-shadow:0 6px 20px rgba(0,0,0,.2); max-width:340px;
+    animation:toastin .18s ease-out;
+  }
+  .toast.success{background:var(--success);}
+  .toast.warn{background:var(--warn);}
+  .toast.danger{background:var(--danger);}
+  @keyframes toastin{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+
+  .modal-backdrop{
+    position:fixed; inset:0; background:rgba(10,12,10,.5); z-index:200;
+    display:flex; align-items:center; justify-content:center; padding:20px;
+  }
+  .modal{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:20px; max-width:520px; width:100%; max-height:80vh; display:flex; flex-direction:column; gap:12px;
+  }
+  .modal-head{display:flex; justify-content:space-between; align-items:center;}
+  .modal textarea{flex:1; min-height:260px; font-size:12px;}
+  .modal-status{font-size:12.5px; color:var(--text-muted);}
+
+  .link-btn{background:none; border:none; color:var(--accent); font-size:12.5px; font-weight:600; cursor:pointer; padding:0;}
+  .link-btn:hover{text-decoration:underline;}
+
+  .actions-cell{display:flex; gap:6px; white-space:nowrap;}
+</style>
+
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <svg class="brand-icon" width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="5" cy="20" r="3" stroke="var(--accent)" stroke-width="2"/>
+        <path d="M8 19.5C13 19.5 12 8 18 8" stroke="var(--accent)" stroke-width="2" stroke-dasharray="1 4" stroke-linecap="round"/>
+        <path d="M18 3C15.5 3 13.5 5 13.5 7.5C13.5 10.8 18 15 18 15C18 15 22.5 10.8 22.5 7.5C22.5 5 20.5 3 18 3Z" stroke="var(--accent2)" stroke-width="2" stroke-linejoin="round" fill="var(--accent2-soft)"/>
+        <circle cx="18" cy="7.5" r="1.6" fill="var(--accent2)"/>
+      </svg>
+      <div class="brand-text">
+        <span class="brand-eyebrow">Panel de despacho</span>
+        <span class="brand-name">Rutas B2B</span>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button class="tab-btn" role="tab" id="tabbtn-datos" aria-selected="true" data-tab="datos">Cargar datos</button>
+      <button class="tab-btn" role="tab" id="tabbtn-rutas" aria-selected="false" data-tab="rutas">Rutas</button>
+      <button class="tab-btn" role="tab" id="tabbtn-dedicadas" aria-selected="false" data-tab="dedicadas">Rutas dedicadas</button>
+    </nav>
+  </header>
+
+  <!-- TAB: CARGAR DATOS -->
+  <section class="tab-panel active" id="tab-datos" role="tabpanel">
+    <div class="page-head">
+      <h1 class="page-title">Cargar órdenes</h1>
+      <p class="page-sub">Pega el rango de celdas copiado desde Excel (con encabezados) o sube un archivo .csv. Esta pestaña quedará reemplazada cuando conectemos la base de datos en vivo de la empresa.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">1. Importar datos</div>
+      <div class="card-hint">Selecciona una fuente: pega celdas copiadas desde Excel, o sube un archivo .csv exportado.</div>
+      <div class="row">
+        <div class="stack" style="flex:1 1 320px;">
+          <label for="paste-area">Pegar desde Excel (Ctrl+V)</label>
+          <textarea id="paste-area" placeholder="Copia el rango de celdas en Excel (incluye la fila de encabezados) y pégalo aquí..."></textarea>
+          <button class="btn btn-primary" id="btn-process-paste">Procesar texto pegado</button>
+        </div>
+        <div class="stack" style="flex:1 1 240px;">
+          <label for="file-input">Subir archivo .xlsx o .csv</label>
+          <input type="file" id="file-input" accept=".csv,.txt,.xlsx,.xlsm" />
+          <button class="btn btn-primary" id="btn-process-file">Subir archivo</button>
+          <div class="card-hint" style="margin:0;" id="file-input-hint">Se lee la primera hoja del Excel. También aceptamos .csv y .txt delimitados por coma, punto y coma o tabulación.</div>
+          <div class="card-hint" style="margin:0; white-space:pre-wrap;" id="import-status"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="mapping-card" style="display:none;">
+      <div class="card-title">2. Confirmar columnas</div>
+      <div class="card-hint">Indicamos una columna probable para cada campo. Revisa y corrige si hace falta.</div>
+      <div class="mapping-grid" id="mapping-grid"></div>
+      <div class="check-row" style="margin-bottom:12px;">
+        <input type="checkbox" id="import-replace" checked />
+        <label for="import-replace">Actualizar la orden existente si el N° de orden ya está cargado (en vez de duplicarla)</label>
+      </div>
+      <div class="card-hint" style="margin-bottom:8px;">Vista previa (primeras 5 filas):</div>
+      <div class="table-wrap" style="margin-bottom:14px;">
+        <table id="mapping-preview-table"></table>
+      </div>
+      <div class="row" style="flex-wrap:nowrap;">
+        <button class="btn btn-primary" id="btn-confirm-import" style="flex:none;">Agregar órdenes</button>
+        <button class="btn btn-ghost" id="btn-cancel-import" style="flex:none;">Cancelar</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:2px;">
+        <div>
+          <div class="card-title">Órdenes cargadas</div>
+          <div class="card-hint" style="margin-bottom:0;" id="orders-count-label">0 órdenes</div>
+        </div>
+        <div class="row" style="flex:none; gap:8px;">
+          <button class="btn btn-sm" id="btn-manual-add-toggle">+ Agregar orden manual</button>
+          <button class="btn btn-sm btn-danger" id="btn-clear-orders">Vaciar todas</button>
+        </div>
+      </div>
+
+      <div class="card" id="manual-add-form" style="display:none; background:var(--surface-alt); box-shadow:none; margin-top:12px;">
+        <div class="mapping-grid">
+          <div><label for="ma-order">N° de orden</label><input type="text" id="ma-order" /></div>
+          <div><label for="ma-address">Dirección</label><input type="text" id="ma-address" /></div>
+          <div><label for="ma-country">País</label><input type="text" id="ma-country" /></div>
+          <div><label for="ma-city">Ciudad</label><input type="text" id="ma-city" /></div>
+          <div><label for="ma-seller">Seller</label><input type="text" id="ma-seller" /></div>
+          <div><label for="ma-warehouse">Bodega</label><input type="text" id="ma-warehouse" /></div>
+          <div>
+            <label for="ma-status">Estado de la orden</label>
+            <input type="text" id="ma-status" list="status-suggestions" />
+            <datalist id="status-suggestions">
+              <option value="Pendiente"></option>
+              <option value="En preparación"></option>
+              <option value="Listo para despacho"></option>
+              <option value="Despachado"></option>
+              <option value="Entregado"></option>
+              <option value="Cancelado"></option>
+            </datalist>
+          </div>
+          <div><label for="ma-dispatch-date">Fecha máxima de despacho</label><input type="date" id="ma-dispatch-date" /></div>
+          <div><label for="ma-delivery-date">Fecha máxima de entrega</label><input type="date" id="ma-delivery-date" /></div>
+          <div><label for="ma-boxes">Cajas</label><input type="number" id="ma-boxes" min="0" step="1" /></div>
+          <div><label for="ma-volume">Volumen (m³)</label><input type="number" id="ma-volume" min="0" step="0.01" /></div>
+          <div><label for="ma-value">Valor declarado (COP)</label><input type="number" id="ma-value" min="0" max="9999999" step="1" placeholder="Hasta 7 dígitos" /></div>
+          <div>
+            <label for="ma-type">Tipo de envío</label>
+            <select id="ma-type">
+              <option value="B2B ESTANDAR LOCAL">B2B ESTANDAR LOCAL</option>
+              <option value="B2B DEDICADO">B2B DEDICADO</option>
+              <option value="B2B CARGO">B2B CARGO</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm" id="btn-manual-add-submit">Agregar orden</button>
+      </div>
+
+      <div class="card" style="background:var(--surface-alt); box-shadow:none; margin-top:12px; margin-bottom:0; padding:14px;">
+        <div class="card-hint" style="margin-bottom:10px;">Filtros (se generan solos a partir de las órdenes cargadas — cuando esto se conecte a la base de datos de la empresa, las opciones se actualizan automáticamente).</div>
+        <div class="row" style="margin-bottom:12px;">
+          <div style="flex:2 1 240px;">
+            <label for="orders-search">Buscar</label>
+            <input type="text" id="orders-search" placeholder="N° de orden, dirección o seller..." />
+          </div>
+          <div>
+            <label for="orders-filter-type">Tipo de envío</label>
+            <select id="orders-filter-type"><option value="">Todos</option></select>
+          </div>
+          <div>
+            <label for="orders-filter-country">País</label>
+            <select id="orders-filter-country"><option value="">Todos</option></select>
+          </div>
+          <div>
+            <label for="orders-filter-city">Ciudad</label>
+            <select id="orders-filter-city"><option value="">Todas</option></select>
+          </div>
+          <div>
+            <label for="orders-filter-seller">Seller</label>
+            <select id="orders-filter-seller"><option value="">Todos</option></select>
+          </div>
+          <div>
+            <label for="orders-filter-warehouse">Bodega</label>
+            <select id="orders-filter-warehouse"><option value="">Todas</option></select>
+          </div>
+          <div>
+            <label for="orders-filter-status">Estado</label>
+            <select id="orders-filter-status"><option value="">Todos</option></select>
+          </div>
+          <div>
+            <label for="orders-filter-dispatch-date">Fecha máx. despacho (hasta)</label>
+            <input type="date" id="orders-filter-dispatch-date" />
+          </div>
+          <div>
+            <label for="orders-filter-delivery-date">Fecha máx. entrega (hasta)</label>
+            <input type="date" id="orders-filter-delivery-date" />
+          </div>
+        </div>
+        <button class="btn btn-sm" id="btn-clear-order-filters">Limpiar filtros</button>
+      </div>
+
+      <div class="table-wrap" style="margin-top:14px;">
+        <table id="orders-table">
+          <thead>
+            <tr>
+              <th>N° Orden</th><th>Dirección</th><th>País</th><th>Ciudad</th><th>Seller</th><th>Bodega</th><th>Estado</th><th>Fecha máx. despacho</th><th>Fecha máx. entrega</th><th>Tipo</th>
+              <th class="num">Cajas</th><th class="num">Volumen m³</th><th class="num">Valor declarado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="orders-tbody"></tbody>
+        </table>
+      </div>
+      <div class="empty-state" id="orders-empty" style="display:none; margin-top:14px;">
+        <strong>Todavía no hay órdenes cargadas</strong>
+        Pega datos desde Excel, sube un .csv o agrega una orden manual arriba.
+      </div>
+      <div class="empty-state" id="orders-filtered-empty" style="display:none; margin-top:14px;">
+        <strong>Ningún resultado con estos filtros</strong>
+        Prueba ajustar la búsqueda o presiona "Limpiar filtros".
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB: RUTAS -->
+  <section class="tab-panel" id="tab-rutas" role="tabpanel"></section>
+
+  <!-- TAB: RUTAS DEDICADAS -->
+  <section class="tab-panel" id="tab-dedicadas" role="tabpanel"></section>
+</div>
+
+<div class="toast-stack" id="toast-stack"></div>
+<div id="modal-root"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var STORAGE_KEY = "rutasB2B_v1";
+  var TYPES = ["B2B ESTANDAR LOCAL","B2B DEDICADO","B2B CARGO"];
+  var STOPWORDS = new Set(["calle","carrera","avenida","av","cra","cll","kra","diagonal","transversal","manzana","mz","casa","apto","apartamento","apt","interior","int","bloque","torre","piso","local","barrio","urbanizacion","urbanizacion","colonia","sector","zona","numero","num","nro","edificio","conjunto","etapa","depto","departamento"]);
+
+  var ROUTE_VIEWS = [
+    {id:"rutas", label:"Rutas", title:"Generar rutas", subtitle:"Agrupamos las órdenes cuyas direcciones son textualmente cercanas (ciudad, barrio y calle) para armar rutas de entrega conjuntas."},
+    {id:"dedicadas", label:"Rutas dedicadas", title:"Rutas dedicadas", subtitle:"Agrupamos las órdenes cuyas direcciones son textualmente cercanas (ciudad, barrio y calle) para armar rutas de entrega conjuntas."}
+  ];
+  function defaultRouteSettings(){
+    return {
+      minStops: 2, maxStops: 8, maxBoxes: null, maxVolume: null,
+      threshold: 50, combineTypes: false,
+      typesIncluded: { "B2B ESTANDAR LOCAL": true, "B2B DEDICADO": true, "B2B CARGO": true, "SIN TIPO": true }
+    };
+  }
+  function defaultViewState(){ return { settings: defaultRouteSettings(), generated: null }; }
+
+  var appState = {
+    orders: [],
+    currency: "$",
+    views: { rutas: defaultViewState(), dedicadas: defaultViewState() }
+  };
+  var idCounter = 1;
+  var routeCounter = 1;
+  var pendingImport = null;
+
+  // ---------- persistence ----------
+  function saveState(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(appState)); }catch(e){}
+  }
+  function loadState(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return;
+      var parsed = JSON.parse(raw);
+      if(parsed.orders) appState.orders = parsed.orders;
+      if(parsed.currency) appState.currency = parsed.currency;
+      if(parsed.views){
+        ROUTE_VIEWS.forEach(function(v){
+          if(parsed.views[v.id]) appState.views[v.id] = Object.assign(defaultViewState(), parsed.views[v.id]);
+        });
+      } else if(parsed.settings || parsed.generated){
+        // migración desde el formato anterior (una sola pestaña de rutas)
+        if(parsed.settings){
+          if(parsed.settings.currency) appState.currency = parsed.settings.currency;
+          appState.views.rutas.settings = Object.assign(defaultRouteSettings(), parsed.settings);
+          delete appState.views.rutas.settings.currency;
+        }
+        if(parsed.generated) appState.views.rutas.generated = parsed.generated;
+      }
+      appState.orders.forEach(function(o){
+        var n = parseInt((o.id||"").replace(/[^0-9]/g,""),10);
+        if(!isNaN(n) && n >= idCounter) idCounter = n+1;
+      });
+      ROUTE_VIEWS.forEach(function(v){
+        var gen = appState.views[v.id] && appState.views[v.id].generated;
+        if(gen && gen.routes){
+          gen.routes.forEach(function(r){
+            var n = parseInt((r.id||"").replace(/[^0-9]/g,""),10);
+            if(!isNaN(n) && n >= routeCounter) routeCounter = n+1;
+          });
+        }
+      });
+    }catch(e){}
+  }
+
+  function nextOrderId(){ return "o" + (idCounter++); }
+  function nextRouteId(){ return "r" + (routeCounter++); }
+
+  // ---------- utils ----------
+  function escapeHtml(s){
+    return String(s==null?"":s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];
+    });
+  }
+  function formatNum(n, dec){
+    dec = dec==null?0:dec;
+    return Number(n||0).toLocaleString("es-ES", {minimumFractionDigits:dec, maximumFractionDigits:dec});
+  }
+  var MAX_DECLARED_VALUE = 9999999;
+  function clampDeclaredValue(n){
+    n = Math.round(Number(n) || 0);
+    return Math.max(0, Math.min(MAX_DECLARED_VALUE, n));
+  }
+  function formatMoney(n){
+    return appState.currency + Number(n||0).toLocaleString("es-CO", {maximumFractionDigits:0});
+  }
+  function toast(msg, kind){
+    var stack = document.getElementById("toast-stack");
+    var el = document.createElement("div");
+    el.className = "toast" + (kind ? " " + kind : "");
+    el.textContent = msg;
+    stack.appendChild(el);
+    setTimeout(function(){ el.remove(); }, 3800);
+  }
+  function toTitleCase(s){
+    return String(s||"").replace(/\b\w/g, function(c){ return c.toUpperCase(); });
+  }
+  var CLOSED_STATUSES = ["despachado","entregado","cancelado"];
+  function isOverdueDispatch(o){
+    if(!o.maxDispatchDate) return false;
+    if(CLOSED_STATUSES.indexOf(String(o.status||"").trim().toLowerCase()) > -1) return false;
+    var d = new Date(o.maxDispatchDate + "T00:00:00");
+    if(isNaN(d.getTime())) return false;
+    var today = new Date(); today.setHours(0,0,0,0);
+    return d.getTime() < today.getTime();
+  }
+  function formatDispatchDateCell(o){
+    if(!o.maxDispatchDate) return "";
+    var label = escapeHtml(o.maxDispatchDate);
+    if(isOverdueDispatch(o)) return '<span class="badge badge-overdue" title="Fecha de despacho vencida">⚠ ' + label + '</span>';
+    return label;
+  }
+  function isOverdueDelivery(o){
+    if(!o.maxDeliveryDate) return false;
+    if(CLOSED_STATUSES.indexOf(String(o.status||"").trim().toLowerCase()) > -1) return false;
+    var d = new Date(o.maxDeliveryDate + "T00:00:00");
+    if(isNaN(d.getTime())) return false;
+    var today = new Date(); today.setHours(0,0,0,0);
+    return d.getTime() < today.getTime();
+  }
+  function formatDeliveryDateCell(o){
+    if(!o.maxDeliveryDate) return "";
+    var label = escapeHtml(o.maxDeliveryDate);
+    if(isOverdueDelivery(o)) return '<span class="badge badge-overdue" title="Fecha de entrega vencida">⚠ ' + label + '</span>';
+    return label;
+  }
+
+  // ---------- number / type parsing ----------
+  function parseNumber(raw){
+    if(raw==null) return 0;
+    var s = String(raw).trim();
+    if(s==="") return 0;
+    s = s.replace(/[^0-9.,-]/g, "");
+    var lastComma = s.lastIndexOf(",");
+    var lastDot = s.lastIndexOf(".");
+    if(lastComma > -1 && lastDot > -1){
+      if(lastComma > lastDot){ s = s.replace(/\./g, "").replace(",", "."); }
+      else { s = s.replace(/,/g, ""); }
+    } else if(lastComma > -1){
+      s = s.replace(",", ".");
+    }
+    var n = parseFloat(s);
+    return isNaN(n) ? 0 : n;
+  }
+  function matchType(raw){
+    if(!raw) return null;
+    var n = String(raw).trim().toUpperCase().replace(/\s+/g, " ");
+    if(TYPES.indexOf(n) > -1) return n;
+    if(n.indexOf("DEDIC") > -1) return "B2B DEDICADO";
+    if(n.indexOf("CARGO") > -1) return "B2B CARGO";
+    if(n.indexOf("LOCAL") > -1 || n.indexOf("ESTANDAR") > -1 || n.indexOf("ESTÁNDAR") > -1) return "B2B ESTANDAR LOCAL";
+    return null;
+  }
+  function typeBucket(type){ return type || "SIN TIPO"; }
+  function typeBadgeClass(type){
+    if(type === "B2B ESTANDAR LOCAL") return "badge-local";
+    if(type === "B2B DEDICADO") return "badge-dedicado";
+    if(type === "B2B CARGO") return "badge-cargo";
+    return "badge-none";
+  }
+  function typeBadgeLabel(type){ return type || "Sin tipo"; }
+
+  // ---------- delimited text parsing ----------
+  function parseDelimited(text){
+    var firstLine = text.split(/\r?\n/)[0] || "";
+    var tabCount = (firstLine.match(/\t/g) || []).length;
+    var semiCount = (firstLine.match(/;/g) || []).length;
+    var commaCount = (firstLine.match(/,/g) || []).length;
+    var delim = "\t";
+    if(tabCount === 0){ delim = (semiCount >= commaCount && semiCount > 0) ? ";" : ","; }
+
+    var rows = [], row = [], field = "", inQuotes = false;
+    for(var i=0; i<text.length; i++){
+      var c = text[i];
+      if(inQuotes){
+        if(c === "\""){
+          if(text[i+1] === "\""){ field += "\""; i++; } else { inQuotes = false; }
+        } else field += c;
+      } else {
+        if(c === "\""){ inQuotes = true; }
+        else if(c === delim){ row.push(field); field = ""; }
+        else if(c === "\n"){ row.push(field); rows.push(row); row = []; field = ""; }
+        else if(c === "\r"){ /* skip */ }
+        else field += c;
+      }
+    }
+    if(field.length || row.length){ row.push(field); rows.push(row); }
+    return rows.filter(function(r){ return r.some(function(c){ return String(c).trim() !== ""; }); });
+  }
+
+  // ---------- address similarity ----------
+  var COMBINING_MARKS_RE = new RegExp("[" + String.fromCharCode(768) + "-" + String.fromCharCode(879) + "]", "g");
+  function normalizeAddr(str){
+    return String(str||"").toLowerCase()
+      .normalize("NFD").replace(COMBINING_MARKS_RE, "")
+      .replace(/[^a-z0-9#,\s-]/g, " ")
+      .replace(/\s+/g, " ").trim();
+  }
+  function addressSegments(addr){
+    var norm = normalizeAddr(addr);
+    var parts = norm.split(",").map(function(s){ return s.trim(); }).filter(Boolean);
+    if(parts.length === 0) return {calle:"", barrio:"", ciudad:""};
+    if(parts.length === 1) return {calle:parts[0], barrio:"", ciudad:""};
+    if(parts.length === 2) return {calle:parts[0], barrio:"", ciudad:parts[1]};
+    return {calle:parts.slice(0, parts.length-2).join(" "), barrio:parts[parts.length-2], ciudad:parts[parts.length-1]};
+  }
+  function addressSegmentsRaw(addr){
+    var parts = String(addr||"").split(",").map(function(s){ return s.trim(); }).filter(Boolean);
+    if(parts.length === 0) return {calle:"", barrio:"", ciudad:""};
+    if(parts.length === 1) return {calle:parts[0], barrio:"", ciudad:""};
+    if(parts.length === 2) return {calle:parts[0], barrio:"", ciudad:parts[1]};
+    return {calle:parts.slice(0, parts.length-2).join(" "), barrio:parts[parts.length-2], ciudad:parts[parts.length-1]};
+  }
+  function tokenSet(str){
+    var out = new Set();
+    String(str||"").split(" ").forEach(function(w){
+      if(w.length > 2 && !/^\d+$/.test(w) && !STOPWORDS.has(w)) out.add(w);
+    });
+    return out;
+  }
+  function jaccard(a, b){
+    if(a.size === 0 && b.size === 0) return 0;
+    var inter = 0;
+    a.forEach(function(x){ if(b.has(x)) inter++; });
+    var union = a.size + b.size - inter;
+    return union === 0 ? 0 : inter/union;
+  }
+  function orderLocationParts(o){
+    var segs = addressSegments(o.address);
+    var country = normalizeAddr(o.country);
+    var city = normalizeAddr(o.city) || segs.ciudad;
+    return {country: country, city: city, barrio: segs.barrio, calle: segs.calle};
+  }
+  function addressSimilarity(o1, o2){
+    var p1 = orderLocationParts(o1), p2 = orderLocationParts(o2);
+    if(p1.country && p2.country && p1.country !== p2.country) return 0;
+    var cityScore = 0, barrioScore = 0;
+    if(p1.city && p2.city){ cityScore = p1.city === p2.city ? 1 : jaccard(tokenSet(p1.city), tokenSet(p2.city)); }
+    if(p1.barrio && p2.barrio){ barrioScore = p1.barrio === p2.barrio ? 1 : jaccard(tokenSet(p1.barrio), tokenSet(p2.barrio)); }
+    var calleScore = jaccard(tokenSet(p1.calle), tokenSet(p2.calle));
+    return cityScore*0.5 + barrioScore*0.35 + calleScore*0.15;
+  }
+  function deriveZoneLabel(orders){
+    var counts = {}, countryCounts = {};
+    orders.forEach(function(o){
+      var label = (o.city && o.city.trim()) ? o.city.trim() : "";
+      if(!label){ var segs = addressSegmentsRaw(o.address); label = segs.ciudad || segs.barrio || ""; }
+      if(label){
+        var key = label.toLowerCase();
+        if(!counts[key]) counts[key] = {count:0, display:label};
+        counts[key].count++;
+      }
+      if(o.country && o.country.trim()){
+        var ck = o.country.trim().toLowerCase();
+        if(!countryCounts[ck]) countryCounts[ck] = {count:0, display:o.country.trim()};
+        countryCounts[ck].count++;
+      }
+    });
+    var best = null;
+    Object.keys(counts).forEach(function(k){
+      if(!best || counts[k].count > best.count) best = counts[k];
+    });
+    var bestCountry = null;
+    Object.keys(countryCounts).forEach(function(k){
+      if(!bestCountry || countryCounts[k].count > bestCountry.count) bestCountry = countryCounts[k];
+    });
+    var label = best ? toTitleCase(best.display) : "Zona sin identificar";
+    if(bestCountry && bestCountry.count === orders.length) label += ", " + toTitleCase(bestCountry.display);
+    return label;
+  }
+
+  // ---------- clustering ----------
+  function buildClusters(orders, opts){
+    var remaining = orders.slice();
+    var clusters = [];
+    while(remaining.length){
+      var seed = remaining.shift();
+      var cluster = [seed];
+      for(var i = remaining.length-1; i >= 0; i--){
+        var o = remaining[i];
+        if(!opts.combineTypes && typeBucket(o.type) !== typeBucket(seed.type)) continue;
+        if(opts.maxStops && cluster.length >= opts.maxStops) break;
+        var sim = addressSimilarity(seed, o);
+        if(sim >= opts.threshold){
+          var wouldBoxes = cluster.reduce(function(s,x){ return s+x.boxes; }, 0) + o.boxes;
+          var wouldVol = cluster.reduce(function(s,x){ return s+x.volume; }, 0) + o.volume;
+          if(opts.maxBoxes && wouldBoxes > opts.maxBoxes) continue;
+          if(opts.maxVolume && wouldVol > opts.maxVolume) continue;
+          cluster.push(o);
+          remaining.splice(i, 1);
+        }
+      }
+      clusters.push(cluster);
+    }
+    return clusters;
+  }
+
+  function computeThreshold(sliderVal){ return 0.20 + (sliderVal/100)*0.55; }
+
+  // ---------- rendering: tabs ----------
+  function switchTab(name){
+    document.querySelectorAll(".tab-panel").forEach(function(p){ p.classList.remove("active"); });
+    document.querySelectorAll(".tab-btn").forEach(function(b){ b.setAttribute("aria-selected", "false"); });
+    document.getElementById("tab-" + name).classList.add("active");
+    document.getElementById("tabbtn-" + name).setAttribute("aria-selected", "true");
+  }
+
+  // ---------- plantilla compartida por las pestañas de rutas ----------
+  function routeViewHtml(view){
+    var id = view.id;
+    return (
+      '<div class="page-head">' +
+        '<h1 class="page-title">' + escapeHtml(view.title) + '</h1>' +
+        '<p class="page-sub">' + escapeHtml(view.subtitle) + '</p>' +
+      '</div>' +
+      '<div class="info-box">' +
+        '<span>ℹ️</span>' +
+        '<span><strong>Cómo se calculan las rutas:</strong> no usamos mapas ni coordenadas. Si cargaste País y Ciudad, esos campos se usan primero (órdenes de distinto país nunca se agrupan); el resto de la cercanía se estima comparando el texto de la dirección, así que es aproximado. Ajusta la sensibilidad si agrupa de más o de menos, o mueve órdenes manualmente entre rutas con el selector "Mover a" de cada fila.</span>' +
+      '</div>' +
+      '<div class="card">' +
+        '<div class="card-title">Filtrar por ubicación</div>' +
+        '<div class="card-hint" id="' + id + '-location-filter-hint">Si tus órdenes importadas incluyen columnas de País y/o Ciudad, puedes limitar la generación de rutas a una ubicación específica.</div>' +
+        '<div class="row">' +
+          '<div><label for="' + id + '-filter-country">País</label><select id="' + id + '-filter-country"><option value="">Todos</option></select></div>' +
+          '<div><label for="' + id + '-filter-city">Ciudad</label><select id="' + id + '-filter-city"><option value="">Todas</option></select></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="card">' +
+        '<div class="card-title">Configuración de la generación</div>' +
+        '<div class="card-hint">Estos parámetros se guardan y se reutilizan la próxima vez.</div>' +
+        '<div class="row">' +
+          '<div>' +
+            '<label>Tipos de envío a incluir</label>' +
+            '<div class="stack" style="gap:6px;">' +
+              '<div class="check-row"><input type="checkbox" id="' + id + '-type-local" checked><label for="' + id + '-type-local">B2B ESTANDAR LOCAL</label></div>' +
+              '<div class="check-row"><input type="checkbox" id="' + id + '-type-dedicado" checked><label for="' + id + '-type-dedicado">B2B DEDICADO</label></div>' +
+              '<div class="check-row"><input type="checkbox" id="' + id + '-type-cargo" checked><label for="' + id + '-type-cargo">B2B CARGO</label></div>' +
+              '<div class="check-row"><input type="checkbox" id="' + id + '-type-none" checked><label for="' + id + '-type-none">Sin tipo especificado</label></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="stack" style="gap:10px;">' +
+            '<div class="check-row"><input type="checkbox" id="' + id + '-combine-types"><label for="' + id + '-combine-types">Agrupar distintos tipos de envío en una misma ruta</label></div>' +
+            '<div class="card-hint" style="margin:0;">Por defecto, Dedicado y Cargo no se combinan entre sí ni con Local: cada tipo arma sus propias rutas.</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="row">' +
+          '<div><label for="' + id + '-min-stops">Mínimo de paradas por ruta</label><input type="number" id="' + id + '-min-stops" min="1" step="1" value="2" /></div>' +
+          '<div><label for="' + id + '-max-stops">Máximo de paradas por ruta</label><input type="number" id="' + id + '-max-stops" min="1" step="1" value="8" /></div>' +
+          '<div><label for="' + id + '-max-boxes">Máx. cajas por ruta (opcional)</label><input type="number" id="' + id + '-max-boxes" min="1" step="1" placeholder="Sin límite" /></div>' +
+          '<div><label for="' + id + '-max-volume">Máx. volumen m³ por ruta (opcional)</label><input type="number" id="' + id + '-max-volume" min="0" step="0.1" placeholder="Sin límite" /></div>' +
+        '</div>' +
+        '<div class="row">' +
+          '<div style="flex:2 1 260px;"><label for="' + id + '-threshold">Sensibilidad de agrupamiento: <span id="' + id + '-threshold-label">flexible</span></label><input type="range" id="' + id + '-threshold" min="0" max="100" value="50" /></div>' +
+          '<div><label for="' + id + '-currency">Símbolo de moneda</label><input type="text" id="' + id + '-currency" value="$" maxlength="4" /><div class="card-hint" style="margin:4px 0 0;">Valor declarado en pesos colombianos (COP), sin decimales, hasta 7 dígitos (máx. $9.999.999). Este símbolo es el mismo en ambas pestañas de rutas.</div></div>' +
+        '</div>' +
+        '<div style="margin-top:6px;"><button class="btn btn-primary" id="' + id + '-btn-generate">Generar rutas</button></div>' +
+      '</div>' +
+      '<div id="' + id + '-results-area"></div>'
+    );
+  }
+  function renderRouteViewShells(){
+    ROUTE_VIEWS.forEach(function(view){
+      document.getElementById("tab-" + view.id).innerHTML = routeViewHtml(view);
+      document.getElementById(view.id + "-filter-country").addEventListener("change", function(){ updateCityFilterOptions(view.id, ""); });
+      document.getElementById(view.id + "-threshold").addEventListener("input", function(){ updateThresholdLabel(view.id); });
+      document.getElementById(view.id + "-currency").addEventListener("change", function(){
+        appState.currency = this.value || "$";
+        saveState();
+        ROUTE_VIEWS.forEach(function(v){
+          document.getElementById(v.id + "-currency").value = appState.currency;
+          renderGenerated(v.id);
+        });
+        renderOrdersTable();
+      });
+      document.getElementById(view.id + "-btn-generate").addEventListener("click", function(){ runGeneration(view.id); });
+    });
+  }
+
+  // ---------- ubicación: filtros País/Ciudad en la pestaña Rutas ----------
+  function uniqueOrderValues(getter){
+    var map = {};
+    appState.orders.forEach(function(o){
+      var v = (getter(o) || "").trim();
+      if(v){ var k = v.toLowerCase(); if(!map[k]) map[k] = v; }
+    });
+    return Object.keys(map).sort().map(function(k){ return map[k]; });
+  }
+  function updateCityFilterOptions(view, preferredValue){
+    var countrySel = document.getElementById(view + "-filter-country");
+    var citySel = document.getElementById(view + "-filter-city");
+    var selectedCountry = countrySel.value;
+    var cities = uniqueOrderValues(function(o){
+      if(selectedCountry && (o.country || "").trim() !== selectedCountry) return "";
+      return o.city;
+    });
+    citySel.innerHTML = '<option value="">Todas</option>' + cities.map(function(c){
+      return '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '</option>';
+    }).join("");
+    citySel.value = cities.indexOf(preferredValue) > -1 ? preferredValue : "";
+  }
+  var PRESET_COUNTRIES = ["Colombia", "México", "Chile"];
+  function populateLocationFilters(view){
+    var countrySel = document.getElementById(view + "-filter-country");
+    var prevCountry = countrySel.value;
+    var prevCity = document.getElementById(view + "-filter-city").value;
+    var countries = withPresets(PRESET_COUNTRIES, uniqueOrderValues(function(o){ return o.country; }));
+    countrySel.innerHTML = '<option value="">Todos</option>' + countries.map(function(c){
+      return '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '</option>';
+    }).join("");
+    countrySel.value = countries.indexOf(prevCountry) > -1 ? prevCountry : "";
+    updateCityFilterOptions(view, prevCity);
+    document.getElementById(view + "-location-filter-hint").textContent = "Filtra qué órdenes entran a la generación de rutas según País y/o Ciudad.";
+  }
+
+  // ---------- filtros dinámicos de la tabla "Órdenes cargadas" ----------
+  var ordersFilter = { search: "", type: "", country: "", city: "", seller: "", warehouse: "", status: "", dispatchDateTo: "", deliveryDateTo: "" };
+
+  function fillDynamicSelect(selectId, values, allLabel){
+    var sel = document.getElementById(selectId);
+    var prev = sel.value;
+    sel.innerHTML = '<option value="">' + allLabel + '</option>' + values.map(function(v){
+      return '<option value="' + escapeHtml(v) + '">' + escapeHtml(v) + '</option>';
+    }).join("");
+    sel.value = values.indexOf(prev) > -1 ? prev : "";
+    return sel.value;
+  }
+  function withPresets(presets, discovered){
+    var seen = {};
+    var merged = [];
+    presets.forEach(function(c){ seen[c.toLowerCase()] = true; merged.push(c); });
+    discovered.forEach(function(c){ if(!seen[c.toLowerCase()]){ seen[c.toLowerCase()] = true; merged.push(c); } });
+    return merged;
+  }
+
+  function populateOrdersFilterBar(){
+    var types = uniqueOrderValues(function(o){ return o.type || "Sin tipo"; });
+    fillDynamicSelect("orders-filter-type", types, "Todos");
+    var countryOptions = withPresets(PRESET_COUNTRIES, uniqueOrderValues(function(o){ return o.country; }));
+    var countryVal = fillDynamicSelect("orders-filter-country", countryOptions, "Todos");
+    var cities = uniqueOrderValues(function(o){
+      if(countryVal && (o.country || "").trim() !== countryVal) return "";
+      return o.city;
+    });
+    fillDynamicSelect("orders-filter-city", cities, "Todas");
+    fillDynamicSelect("orders-filter-seller", uniqueOrderValues(function(o){ return o.seller; }), "Todos");
+    fillDynamicSelect("orders-filter-warehouse", uniqueOrderValues(function(o){ return o.warehouse; }), "Todas");
+    fillDynamicSelect("orders-filter-status", uniqueOrderValues(function(o){ return o.status; }), "Todos");
+
+    ordersFilter.type = document.getElementById("orders-filter-type").value;
+    ordersFilter.country = countryVal;
+    ordersFilter.city = document.getElementById("orders-filter-city").value;
+    ordersFilter.seller = document.getElementById("orders-filter-seller").value;
+    ordersFilter.warehouse = document.getElementById("orders-filter-warehouse").value;
+    ordersFilter.status = document.getElementById("orders-filter-status").value;
+  }
+
+  function getFilteredOrders(){
+    var q = ordersFilter.search.trim().toLowerCase();
+    return appState.orders.filter(function(o){
+      if(ordersFilter.type && (o.type || "Sin tipo") !== ordersFilter.type) return false;
+      if(ordersFilter.country && (o.country || "").trim() !== ordersFilter.country) return false;
+      if(ordersFilter.city && (o.city || "").trim() !== ordersFilter.city) return false;
+      if(ordersFilter.seller && (o.seller || "").trim() !== ordersFilter.seller) return false;
+      if(ordersFilter.warehouse && (o.warehouse || "").trim() !== ordersFilter.warehouse) return false;
+      if(ordersFilter.status && (o.status || "").trim() !== ordersFilter.status) return false;
+      if(ordersFilter.dispatchDateTo){
+        if(!o.maxDispatchDate || o.maxDispatchDate > ordersFilter.dispatchDateTo) return false;
+      }
+      if(ordersFilter.deliveryDateTo){
+        if(!o.maxDeliveryDate || o.maxDeliveryDate > ordersFilter.deliveryDateTo) return false;
+      }
+      if(q){
+        var hay = (o.orderNumber + " " + o.address + " " + (o.seller||"")).toLowerCase();
+        if(hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+  }
+
+  document.getElementById("orders-search").addEventListener("input", function(){
+    ordersFilter.search = this.value; renderOrdersTable();
+  });
+  document.getElementById("orders-filter-type").addEventListener("change", function(){
+    ordersFilter.type = this.value; renderOrdersTable();
+  });
+  document.getElementById("orders-filter-country").addEventListener("change", function(){
+    ordersFilter.country = this.value; ordersFilter.city = "";
+    document.getElementById("orders-filter-city").value = "";
+    renderOrdersTable();
+  });
+  document.getElementById("orders-filter-city").addEventListener("change", function(){
+    ordersFilter.city = this.value; renderOrdersTable();
+  });
+  document.getElementById("orders-filter-seller").addEventListener("change", function(){
+    ordersFilter.seller = this.value; renderOrdersTable();
+  });
+  document.getElementById("orders-filter-warehouse").addEventListener("change", function(){
+    ordersFilter.warehouse = this.value; renderOrdersTable();
+  });
+  document.getElementById("orders-filter-status").addEventListener("change", function(){
+    ordersFilter.status = this.value; renderOrdersTable();
+  });
+  document.getElementById("orders-filter-dispatch-date").addEventListener("change", function(){
+    ordersFilter.dispatchDateTo = this.value; renderOrdersTable();
+  });
+  document.getElementById("orders-filter-delivery-date").addEventListener("change", function(){
+    ordersFilter.deliveryDateTo = this.value; renderOrdersTable();
+  });
+  document.getElementById("btn-clear-order-filters").addEventListener("click", function(){
+    ordersFilter = { search: "", type: "", country: "", city: "", seller: "", warehouse: "", status: "", dispatchDateTo: "", deliveryDateTo: "" };
+    document.getElementById("orders-search").value = "";
+    document.getElementById("orders-filter-dispatch-date").value = "";
+    document.getElementById("orders-filter-delivery-date").value = "";
+    renderOrdersTable();
+  });
+
+  // ---------- rendering: orders table ----------
+  function renderOrdersTable(){
+    var tbody = document.getElementById("orders-tbody");
+    var countLabel = document.getElementById("orders-count-label");
+    var emptyEl = document.getElementById("orders-empty");
+    var filteredEmptyEl = document.getElementById("orders-filtered-empty");
+    emptyEl.style.display = appState.orders.length ? "none" : "block";
+    tbody.innerHTML = "";
+    ROUTE_VIEWS.forEach(function(v){ populateLocationFilters(v.id); });
+    populateOrdersFilterBar();
+    var visible = appState.orders.length ? getFilteredOrders() : [];
+    var filterActive = ordersFilter.search || ordersFilter.type || ordersFilter.country || ordersFilter.city || ordersFilter.seller || ordersFilter.warehouse || ordersFilter.status || ordersFilter.dispatchDateTo || ordersFilter.deliveryDateTo;
+    countLabel.textContent = filterActive
+      ? visible.length + " de " + appState.orders.length + (appState.orders.length === 1 ? " orden" : " órdenes")
+      : appState.orders.length + (appState.orders.length === 1 ? " orden" : " órdenes");
+    filteredEmptyEl.style.display = (appState.orders.length && filterActive && !visible.length) ? "block" : "none";
+    visible.forEach(function(o){
+      var tr = document.createElement("tr");
+      tr.dataset.id = o.id;
+      tr.innerHTML =
+        '<td class="mono">' + escapeHtml(o.orderNumber) + '</td>' +
+        '<td>' + escapeHtml(o.address) + '</td>' +
+        '<td>' + escapeHtml(o.country) + '</td>' +
+        '<td>' + escapeHtml(o.city) + '</td>' +
+        '<td>' + escapeHtml(o.seller) + '</td>' +
+        '<td>' + escapeHtml(o.warehouse) + '</td>' +
+        '<td>' + (o.status ? '<span class="chip">' + escapeHtml(o.status) + '</span>' : '') + '</td>' +
+        '<td>' + formatDispatchDateCell(o) + '</td>' +
+        '<td>' + formatDeliveryDateCell(o) + '</td>' +
+        '<td><span class="badge ' + typeBadgeClass(o.type) + '">' + escapeHtml(typeBadgeLabel(o.type)) + '</span></td>' +
+        '<td class="num">' + formatNum(o.boxes) + '</td>' +
+        '<td class="num">' + formatNum(o.volume,2) + '</td>' +
+        '<td class="num">' + formatMoney(o.value) + '</td>' +
+        '<td class="actions-cell">' +
+          '<button class="btn btn-sm btn-edit">Editar</button>' +
+          '<button class="btn btn-sm btn-danger btn-delete">Eliminar</button>' +
+        '</td>';
+      tbody.appendChild(tr);
+    });
+  }
+
+  function beginRowEdit(tr, order){
+    tr.innerHTML =
+      '<td><input class="row-edit-input" type="text" value="' + escapeHtml(order.orderNumber) + '" data-f="orderNumber"></td>' +
+      '<td><input class="row-edit-input" type="text" value="' + escapeHtml(order.address) + '" data-f="address"></td>' +
+      '<td><input class="row-edit-input" type="text" value="' + escapeHtml(order.country) + '" data-f="country"></td>' +
+      '<td><input class="row-edit-input" type="text" value="' + escapeHtml(order.city) + '" data-f="city"></td>' +
+      '<td><input class="row-edit-input" type="text" value="' + escapeHtml(order.seller) + '" data-f="seller"></td>' +
+      '<td><input class="row-edit-input" type="text" value="' + escapeHtml(order.warehouse) + '" data-f="warehouse"></td>' +
+      '<td><input class="row-edit-input" type="text" value="' + escapeHtml(order.status) + '" data-f="status" list="status-suggestions"></td>' +
+      '<td><input class="row-edit-input" type="date" value="' + escapeHtml(order.maxDispatchDate||"") + '" data-f="maxDispatchDate"></td>' +
+      '<td><input class="row-edit-input" type="date" value="' + escapeHtml(order.maxDeliveryDate||"") + '" data-f="maxDeliveryDate"></td>' +
+      '<td><select class="row-edit-input" data-f="type">' + TYPES.map(function(t){
+        return '<option value="' + t + '"' + (t===order.type?' selected':'') + '>' + t + '</option>';
+      }).join("") + '</select></td>' +
+      '<td class="num"><input class="row-edit-input" type="number" min="0" step="1" value="' + order.boxes + '" data-f="boxes"></td>' +
+      '<td class="num"><input class="row-edit-input" type="number" min="0" step="0.01" value="' + order.volume + '" data-f="volume"></td>' +
+      '<td class="num"><input class="row-edit-input" type="number" min="0" max="9999999" step="1" value="' + order.value + '" data-f="value"></td>' +
+      '<td class="actions-cell"><button class="btn btn-sm btn-primary btn-save">Guardar</button><button class="btn btn-sm btn-cancel">Cancelar</button></td>';
+    tr.querySelector(".btn-save").addEventListener("click", function(){
+      order.orderNumber = tr.querySelector('[data-f=orderNumber]').value.trim();
+      order.address = tr.querySelector('[data-f=address]').value.trim();
+      order.country = tr.querySelector('[data-f=country]').value.trim();
+      order.city = tr.querySelector('[data-f=city]').value.trim();
+      order.seller = tr.querySelector('[data-f=seller]').value.trim();
+      order.warehouse = tr.querySelector('[data-f=warehouse]').value.trim();
+      order.status = tr.querySelector('[data-f=status]').value.trim();
+      order.maxDispatchDate = tr.querySelector('[data-f=maxDispatchDate]').value;
+      order.maxDeliveryDate = tr.querySelector('[data-f=maxDeliveryDate]').value;
+      order.type = tr.querySelector('[data-f=type]').value;
+      order.boxes = parseNumber(tr.querySelector('[data-f=boxes]').value);
+      order.volume = parseNumber(tr.querySelector('[data-f=volume]').value);
+      order.value = clampDeclaredValue(parseNumber(tr.querySelector('[data-f=value]').value));
+      saveState(); renderOrdersTable();
+      toast("Orden actualizada", "success");
+    });
+    tr.querySelector(".btn-cancel").addEventListener("click", renderOrdersTable);
+  }
+
+  document.addEventListener("click", function(e){
+    if(e.target.classList.contains("btn-delete")){
+      var tr = e.target.closest("tr");
+      var id = tr.dataset.id;
+      openConfirmModal("¿Eliminar esta orden?", "Eliminar", function(){
+        appState.orders = appState.orders.filter(function(o){ return o.id !== id; });
+        saveState(); renderOrdersTable();
+        toast("Orden eliminada", "warn");
+      });
+    }
+    if(e.target.classList.contains("btn-edit")){
+      var tr2 = e.target.closest("tr");
+      var order = appState.orders.find(function(o){ return o.id === tr2.dataset.id; });
+      if(order) beginRowEdit(tr2, order);
+    }
+  });
+
+  document.getElementById("btn-clear-orders").addEventListener("click", function(){
+    if(!appState.orders.length) return;
+    openConfirmModal("Esto eliminará todas las órdenes cargadas y las rutas generadas (en ambas pestañas de rutas). ¿Continuar?", "Vaciar todas", function(){
+      appState.orders = [];
+      ROUTE_VIEWS.forEach(function(v){ appState.views[v.id].generated = null; });
+      saveState(); renderOrdersTable();
+      ROUTE_VIEWS.forEach(function(v){ renderGenerated(v.id); });
+      toast("Se vaciaron todas las órdenes", "warn");
+    });
+  });
+
+  document.getElementById("btn-manual-add-toggle").addEventListener("click", function(){
+    var f = document.getElementById("manual-add-form");
+    f.style.display = f.style.display === "none" ? "block" : "none";
+  });
+  document.getElementById("btn-manual-add-submit").addEventListener("click", function(){
+    var orderNumber = document.getElementById("ma-order").value.trim();
+    var address = document.getElementById("ma-address").value.trim();
+    if(!orderNumber || !address){ toast("N° de orden y dirección son obligatorios", "danger"); return; }
+    appState.orders.push({
+      id: nextOrderId(), orderNumber: orderNumber, address: address,
+      country: document.getElementById("ma-country").value.trim(),
+      city: document.getElementById("ma-city").value.trim(),
+      seller: document.getElementById("ma-seller").value.trim(),
+      warehouse: document.getElementById("ma-warehouse").value.trim(),
+      status: document.getElementById("ma-status").value.trim(),
+      maxDispatchDate: document.getElementById("ma-dispatch-date").value,
+      maxDeliveryDate: document.getElementById("ma-delivery-date").value,
+      boxes: parseNumber(document.getElementById("ma-boxes").value),
+      volume: parseNumber(document.getElementById("ma-volume").value),
+      value: clampDeclaredValue(parseNumber(document.getElementById("ma-value").value)),
+      type: document.getElementById("ma-type").value
+    });
+    ["ma-order","ma-address","ma-country","ma-city","ma-seller","ma-warehouse","ma-status","ma-dispatch-date","ma-delivery-date","ma-boxes","ma-volume","ma-value"].forEach(function(id){ document.getElementById(id).value = ""; });
+    saveState(); renderOrdersTable();
+    toast("Orden agregada", "success");
+  });
+
+  // ---------- import flow ----------
+  var FIELD_DEFS = [
+    {key:"orderNumber", label:"N° de orden", keywords:["orden","pedido","order","n°","numero","número","nro"]},
+    {key:"address", label:"Dirección", keywords:["direc","address","domicilio"]},
+    {key:"country", label:"País", keywords:["pais","país","country"]},
+    {key:"city", label:"Ciudad", keywords:["ciudad","city","municipio"]},
+    {key:"seller", label:"Seller", keywords:["seller","vendedor"]},
+    {key:"warehouse", label:"Bodega", keywords:["bodega","warehouse","almacen","almacén"]},
+    {key:"status", label:"Estado de la orden", keywords:["estado","status"]},
+    {key:"maxDispatchDate", label:"Fecha máxima de despacho", keywords:["despacho","limite","límite","vencimiento","dispatch"]},
+    {key:"maxDeliveryDate", label:"Fecha máxima de entrega", keywords:["entrega","delivery"]},
+    {key:"boxes", label:"Cantidad de cajas", keywords:["caja","bulto","box","unidades","cant"]},
+    {key:"volume", label:"Volumen (m³)", keywords:["volu","m3","m³","cbm"]},
+    {key:"value", label:"Valor declarado", keywords:["valor","declarado","monto","importe","price","total"]},
+    {key:"type", label:"Tipo de envío", keywords:["tipo","servicio","modalidad"]}
+  ];
+  function guessColumn(headers, keywords){
+    for(var i=0;i<headers.length;i++){
+      var hn = headers[i].toLowerCase();
+      for(var k=0;k<keywords.length;k++){
+        if(hn.indexOf(keywords[k]) > -1) return i;
+      }
+    }
+    return -1;
+  }
+
+  function handleIncomingRows(rows){
+    if(rows.length < 2){ toast("No se detectaron filas suficientes (encabezado + datos)", "warn"); return; }
+    pendingImport = { headers: rows[0].map(function(h){ return String(h).trim(); }), rows: rows.slice(1) };
+    renderMappingUI();
+  }
+
+  function renderMappingUI(){
+    var card = document.getElementById("mapping-card");
+    card.style.display = "block";
+    var grid = document.getElementById("mapping-grid");
+    grid.innerHTML = "";
+    FIELD_DEFS.forEach(function(def){
+      var guess = guessColumn(pendingImport.headers, def.keywords);
+      var wrap = document.createElement("div");
+      wrap.className = "mapping-field";
+      var opts = '<option value="-1">No usar</option>' + pendingImport.headers.map(function(h, i){
+        return '<option value="' + i + '"' + (i===guess?' selected':'') + '>' + escapeHtml(h) + '</option>';
+      }).join("");
+      wrap.innerHTML = '<label>' + def.label + '</label><select id="map-' + def.key + '">' + opts + '</select>';
+      grid.appendChild(wrap);
+      wrap.querySelector("select").addEventListener("change", renderMappingPreview);
+    });
+    renderMappingPreview();
+    card.scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  function currentMapping(){
+    var m = {};
+    FIELD_DEFS.forEach(function(def){
+      var sel = document.getElementById("map-" + def.key);
+      m[def.key] = sel ? parseInt(sel.value, 10) : -1;
+    });
+    return m;
+  }
+
+  function renderMappingPreview(){
+    var mapping = currentMapping();
+    var table = document.getElementById("mapping-preview-table");
+    var headHtml = "<thead><tr>" + FIELD_DEFS.map(function(d){ return "<th>" + d.label + "</th>"; }).join("") + "</tr></thead>";
+    var bodyRows = pendingImport.rows.slice(0, 5).map(function(r){
+      return "<tr>" + FIELD_DEFS.map(function(d){
+        var idx = mapping[d.key];
+        var val = idx>-1 ? (r[idx]||"") : "";
+        return "<td>" + escapeHtml(val) + "</td>";
+      }).join("") + "</tr>";
+    }).join("");
+    table.innerHTML = headHtml + "<tbody>" + bodyRows + "</tbody>";
+  }
+
+  // ---------- xlsx parsing (native ZIP + XML, no external libraries) ----------
+  function getAttrLocal(el, localName){
+    for(var i=0;i<el.attributes.length;i++){
+      var a = el.attributes[i];
+      if(a.localName === localName || a.name === localName || a.name.slice(-(localName.length+1)) === ":"+localName) return a.value;
+    }
+    return null;
+  }
+  function colLettersToIndex(ref){
+    var m = /^([A-Za-z]+)/.exec(ref);
+    if(!m) return 0;
+    var letters = m[1].toUpperCase();
+    var idx = 0;
+    for(var i=0;i<letters.length;i++){ idx = idx*26 + (letters.charCodeAt(i)-64); }
+    return idx-1;
+  }
+  function parseZipEntries(buf){
+    var dv = new DataView(buf);
+    var bytes = new Uint8Array(buf);
+    var EOCD_SIG = 0x06054b50;
+    var eocdOffset = -1;
+    var scanStart = Math.max(0, bytes.length - 65557);
+    for(var i = bytes.length - 22; i >= scanStart; i--){
+      if(dv.getUint32(i, true) === EOCD_SIG){ eocdOffset = i; break; }
+    }
+    if(eocdOffset === -1) throw new Error("no es un archivo .xlsx/.zip válido");
+    var totalEntries = dv.getUint16(eocdOffset+10, true);
+    var cdOffset = dv.getUint32(eocdOffset+16, true);
+    var entries = [];
+    var ptr = cdOffset;
+    var CD_SIG = 0x02014b50;
+    var decoder = new TextDecoder("utf-8");
+    for(var e=0; e<totalEntries; e++){
+      if(dv.getUint32(ptr, true) !== CD_SIG) break;
+      var method = dv.getUint16(ptr+10, true);
+      var compSize = dv.getUint32(ptr+20, true);
+      var uncompSize = dv.getUint32(ptr+24, true);
+      var nameLen = dv.getUint16(ptr+28, true);
+      var extraLen = dv.getUint16(ptr+30, true);
+      var commentLen = dv.getUint16(ptr+32, true);
+      var localHeaderOffset = dv.getUint32(ptr+42, true);
+      var name = decoder.decode(bytes.slice(ptr+46, ptr+46+nameLen));
+      entries.push({name:name, method:method, compSize:compSize, uncompSize:uncompSize, localHeaderOffset:localHeaderOffset});
+      ptr += 46 + nameLen + extraLen + commentLen;
+    }
+    return entries;
+  }
+  async function getEntryBytes(buf, entry){
+    var dv = new DataView(buf);
+    var bytes = new Uint8Array(buf);
+    var lh = entry.localHeaderOffset;
+    var nameLen = dv.getUint16(lh+26, true);
+    var extraLen = dv.getUint16(lh+28, true);
+    var dataStart = lh + 30 + nameLen + extraLen;
+    var compressed = bytes.slice(dataStart, dataStart + entry.compSize);
+    if(entry.method === 0) return compressed;
+    if(entry.method === 8){
+      if(!window.DecompressionStream) throw new Error("este navegador no soporta descomprimir archivos .xlsx");
+      var ds = new DecompressionStream("deflate-raw");
+      var stream = new Blob([compressed]).stream().pipeThrough(ds);
+      var ab = await new Response(stream).arrayBuffer();
+      return new Uint8Array(ab);
+    }
+    throw new Error("método de compresión no soportado dentro del .xlsx");
+  }
+  function parseSharedStrings(xmlText){
+    if(!xmlText) return [];
+    var doc = new DOMParser().parseFromString(xmlText, "application/xml");
+    var sis = doc.getElementsByTagName("si");
+    var arr = [];
+    for(var i=0;i<sis.length;i++){
+      var ts = sis[i].getElementsByTagName("t");
+      var text = "";
+      for(var j=0;j<ts.length;j++) text += ts[j].textContent;
+      arr.push(text);
+    }
+    return arr;
+  }
+  function parseWorksheetRows(xmlText, sharedStrings){
+    var doc = new DOMParser().parseFromString(xmlText, "application/xml");
+    var rowEls = doc.getElementsByTagName("row");
+    var rows = [];
+    var maxCol = 0;
+    for(var r=0;r<rowEls.length;r++){
+      var cellEls = rowEls[r].getElementsByTagName("c");
+      var rowArr = [];
+      for(var c=0;c<cellEls.length;c++){
+        var cellEl = cellEls[c];
+        var ref = getAttrLocal(cellEl, "r") || "";
+        var colIdx = ref ? colLettersToIndex(ref) : c;
+        var t = getAttrLocal(cellEl, "t");
+        var value = "";
+        if(t === "s"){
+          var vEl = cellEl.getElementsByTagName("v")[0];
+          var idx = vEl ? parseInt(vEl.textContent, 10) : -1;
+          value = (idx >= 0 && sharedStrings[idx] != null) ? sharedStrings[idx] : "";
+        } else if(t === "inlineStr"){
+          var isEl = cellEl.getElementsByTagName("is")[0];
+          var ts2 = isEl ? isEl.getElementsByTagName("t") : [];
+          var txt = "";
+          for(var k=0;k<ts2.length;k++) txt += ts2[k].textContent;
+          value = txt;
+        } else {
+          var vEl2 = cellEl.getElementsByTagName("v")[0];
+          value = vEl2 ? vEl2.textContent : "";
+        }
+        rowArr[colIdx] = value;
+        if(colIdx+1 > maxCol) maxCol = colIdx+1;
+      }
+      rows.push(rowArr);
+    }
+    rows.forEach(function(rowArr){
+      for(var i=0;i<maxCol;i++){ if(rowArr[i]===undefined) rowArr[i]=""; }
+      rowArr.length = maxCol;
+    });
+    return rows.filter(function(r){ return r.some(function(c){ return String(c).trim() !== ""; }); });
+  }
+  function setImportStatus(text, kind){
+    var el = document.getElementById("import-status");
+    el.textContent = text || "";
+    el.style.color = kind === "danger" ? "var(--danger)" : kind === "warn" ? "var(--warn)" : kind === "success" ? "var(--success)" : "var(--text-muted)";
+  }
+  function xmlHasError(doc){
+    return doc.getElementsByTagName("parsererror").length > 0;
+  }
+  async function handleXlsxFile(file){
+    setImportStatus("Leyendo " + file.name + " (" + Math.round(file.size/1024) + " KB)...");
+    try{
+      var buf = await file.arrayBuffer();
+      if(buf.byteLength < 4) throw new Error("el archivo está vacío o no se pudo leer");
+      var sig = new DataView(buf).getUint32(0, false);
+      if(sig !== 0x504b0304 && sig !== 0x504b0506){
+        throw new Error("el archivo no tiene formato .xlsx real (firma ZIP no encontrada). Si lo exportó un sistema externo, puede ser un .xls antiguo o HTML renombrado como .xlsx: ábrelo en Excel y usa \"Guardar como\" → Libro de Excel (.xlsx), o expórtalo como .csv");
+      }
+      var entries = parseZipEntries(buf);
+      setImportStatus("Archivo ZIP leído: " + entries.length + " elementos internos. Buscando xl/workbook.xml...");
+      var byName = {};
+      entries.forEach(function(e){ byName[e.name] = e; });
+
+      async function readEntryText(name){
+        var entry = byName[name];
+        if(!entry) return null;
+        var bytes = await getEntryBytes(buf, entry);
+        return new TextDecoder("utf-8").decode(bytes);
+      }
+
+      var wbXml = await readEntryText("xl/workbook.xml");
+      if(!wbXml){
+        var sample = entries.slice(0, 15).map(function(e){ return e.name; }).join(", ");
+        throw new Error("no se encontró xl/workbook.xml dentro del archivo. Contenido encontrado: " + (sample || "(vacío)"));
+      }
+      var wbDoc = new DOMParser().parseFromString(wbXml, "application/xml");
+      if(xmlHasError(wbDoc)) throw new Error("xl/workbook.xml no es XML válido");
+      var sheetEls = wbDoc.getElementsByTagName("sheet");
+      if(!sheetEls.length) throw new Error("el libro no contiene hojas");
+      var firstSheetRid = getAttrLocal(sheetEls[0], "id");
+      setImportStatus("Hoja detectada: \"" + (sheetEls[0].getAttribute("name") || "1") + "\". Leyendo relaciones...");
+
+      var relsXml = await readEntryText("xl/_rels/workbook.xml.rels");
+      var sheetTarget = "worksheets/sheet1.xml";
+      if(relsXml && firstSheetRid){
+        var relsDoc = new DOMParser().parseFromString(relsXml, "application/xml");
+        var relEls = relsDoc.getElementsByTagName("Relationship");
+        for(var i=0;i<relEls.length;i++){
+          if(relEls[i].getAttribute("Id") === firstSheetRid){ sheetTarget = relEls[i].getAttribute("Target"); break; }
+        }
+      }
+      sheetTarget = sheetTarget.replace(/^\.?\//, "");
+      var sheetPath = sheetTarget.indexOf("xl/") === 0 ? sheetTarget : "xl/" + sheetTarget;
+
+      var sharedXml = await readEntryText("xl/sharedStrings.xml");
+      var sharedStrings = parseSharedStrings(sharedXml);
+
+      setImportStatus("Leyendo celdas de " + sheetPath + "...");
+      var sheetXml = await readEntryText(sheetPath);
+      if(!sheetXml) throw new Error("no se encontró la hoja de cálculo (" + sheetPath + ")");
+      var sheetDoc = new DOMParser().parseFromString(sheetXml, "application/xml");
+      if(xmlHasError(sheetDoc)) throw new Error(sheetPath + " no es XML válido");
+      var rows = parseWorksheetRows(sheetXml, sharedStrings);
+
+      if(!rows.length) throw new Error("la hoja no tiene celdas con datos (¿está vacía o los datos están en otra hoja del libro?)");
+
+      if(rows.length > 20000){
+        toast("El archivo tiene muchas filas; se procesarán las primeras 20.000", "warn");
+        rows.length = 20000;
+      }
+      setImportStatus("✓ Se leyeron " + rows.length + " filas (incluye encabezado). Completa el mapeo de columnas abajo.", "success");
+      handleIncomingRows(rows);
+    }catch(err){
+      console.error(err);
+      var msg = (err && err.message) ? err.message : "error desconocido";
+      setImportStatus("✗ No se pudo leer el archivo: " + msg, "danger");
+      toast("No se pudo leer el .xlsx. Revisa el detalle debajo del botón, o prueba exportarlo como .csv / pegar los datos copiados desde Excel.", "danger");
+    }
+  }
+
+  document.getElementById("btn-process-paste").addEventListener("click", function(){
+    var text = document.getElementById("paste-area").value;
+    if(!text.trim()){ toast("Pega primero los datos copiados desde Excel", "warn"); return; }
+    handleIncomingRows(parseDelimited(text));
+  });
+  document.getElementById("btn-process-file").addEventListener("click", function(){
+    var file = document.getElementById("file-input").files[0];
+    if(!file){ toast("Elige primero un archivo .xlsx o .csv", "warn"); return; }
+    var lower = file.name.toLowerCase();
+    if(lower.slice(-5) === ".xlsx" || lower.slice(-5) === ".xlsm"){
+      toast("Procesando " + file.name + "...", null);
+      handleXlsxFile(file);
+    } else {
+      var reader = new FileReader();
+      reader.onload = function(ev){ handleIncomingRows(parseDelimited(ev.target.result)); };
+      reader.readAsText(file, "utf-8");
+    }
+  });
+  document.getElementById("btn-cancel-import").addEventListener("click", function(){
+    pendingImport = null;
+    document.getElementById("mapping-card").style.display = "none";
+    document.getElementById("paste-area").value = "";
+    document.getElementById("file-input").value = "";
+  });
+  document.getElementById("btn-confirm-import").addEventListener("click", function(){
+    var mapping = currentMapping();
+    if(mapping.orderNumber === -1 || mapping.address === -1){
+      toast("Debes mapear al menos N° de orden y Dirección", "danger"); return;
+    }
+    var replace = document.getElementById("import-replace").checked;
+    var added = 0, updated = 0, skipped = 0, unrecognizedType = 0, valueCapped = 0;
+    pendingImport.rows.forEach(function(r){
+      var orderNumber = mapping.orderNumber>-1 ? String(r[mapping.orderNumber]||"").trim() : "";
+      var address = mapping.address>-1 ? String(r[mapping.address]||"").trim() : "";
+      if(!orderNumber || !address){ skipped++; return; }
+      var typeRaw = mapping.type>-1 ? r[mapping.type] : "";
+      var type = matchType(typeRaw);
+      if(typeRaw && !type) unrecognizedType++;
+      var rawValue = mapping.value>-1 ? parseNumber(r[mapping.value]) : 0;
+      var cappedValue = clampDeclaredValue(rawValue);
+      if(cappedValue !== Math.round(rawValue)) valueCapped++;
+      var rec = {
+        orderNumber: orderNumber, address: address,
+        country: mapping.country>-1 ? String(r[mapping.country]||"").trim() : "",
+        city: mapping.city>-1 ? String(r[mapping.city]||"").trim() : "",
+        seller: mapping.seller>-1 ? String(r[mapping.seller]||"").trim() : "",
+        warehouse: mapping.warehouse>-1 ? String(r[mapping.warehouse]||"").trim() : "",
+        status: mapping.status>-1 ? String(r[mapping.status]||"").trim() : "",
+        maxDispatchDate: mapping.maxDispatchDate>-1 ? String(r[mapping.maxDispatchDate]||"").trim() : "",
+        maxDeliveryDate: mapping.maxDeliveryDate>-1 ? String(r[mapping.maxDeliveryDate]||"").trim() : "",
+        boxes: mapping.boxes>-1 ? parseNumber(r[mapping.boxes]) : 0,
+        volume: mapping.volume>-1 ? parseNumber(r[mapping.volume]) : 0,
+        value: cappedValue,
+        type: type
+      };
+      var existing = replace ? appState.orders.find(function(o){ return o.orderNumber === orderNumber; }) : null;
+      if(existing){
+        Object.assign(existing, rec);
+        updated++;
+      } else {
+        rec.id = nextOrderId();
+        appState.orders.push(rec);
+        added++;
+      }
+    });
+    saveState(); renderOrdersTable();
+    var msg = added + " agregadas, " + updated + " actualizadas" + (skipped ? ", " + skipped + " omitidas por datos incompletos" : "");
+    toast(msg, "success");
+    if(unrecognizedType) toast(unrecognizedType + " filas con tipo de envío no reconocido quedaron como 'Sin tipo'", "warn");
+    if(valueCapped) toast(valueCapped + " valores declarados superaban 7 dígitos y se ajustaron al máximo ($" + MAX_DECLARED_VALUE.toLocaleString("es-CO") + ")", "warn");
+    pendingImport = null;
+    document.getElementById("mapping-card").style.display = "none";
+    document.getElementById("paste-area").value = "";
+    document.getElementById("file-input").value = "";
+  });
+
+  // ---------- route generation ----------
+  function readSettingsFromForm(view){
+    var s = appState.views[view].settings;
+    s.typesIncluded["B2B ESTANDAR LOCAL"] = document.getElementById(view + "-type-local").checked;
+    s.typesIncluded["B2B DEDICADO"] = document.getElementById(view + "-type-dedicado").checked;
+    s.typesIncluded["B2B CARGO"] = document.getElementById(view + "-type-cargo").checked;
+    s.typesIncluded["SIN TIPO"] = document.getElementById(view + "-type-none").checked;
+    s.combineTypes = document.getElementById(view + "-combine-types").checked;
+    s.minStops = Math.max(1, parseInt(document.getElementById(view + "-min-stops").value, 10) || 1);
+    s.maxStops = Math.max(s.minStops, parseInt(document.getElementById(view + "-max-stops").value, 10) || s.minStops);
+    var mb = document.getElementById(view + "-max-boxes").value;
+    s.maxBoxes = mb === "" ? null : parseNumber(mb);
+    var mv = document.getElementById(view + "-max-volume").value;
+    s.maxVolume = mv === "" ? null : parseNumber(mv);
+    s.threshold = parseInt(document.getElementById(view + "-threshold").value, 10);
+    appState.currency = document.getElementById(view + "-currency").value || "$";
+  }
+  function applySettingsToForm(view){
+    var s = appState.views[view].settings;
+    document.getElementById(view + "-type-local").checked = s.typesIncluded["B2B ESTANDAR LOCAL"];
+    document.getElementById(view + "-type-dedicado").checked = s.typesIncluded["B2B DEDICADO"];
+    document.getElementById(view + "-type-cargo").checked = s.typesIncluded["B2B CARGO"];
+    document.getElementById(view + "-type-none").checked = s.typesIncluded["SIN TIPO"];
+    document.getElementById(view + "-combine-types").checked = s.combineTypes;
+    document.getElementById(view + "-min-stops").value = s.minStops;
+    document.getElementById(view + "-max-stops").value = s.maxStops;
+    document.getElementById(view + "-max-boxes").value = s.maxBoxes==null ? "" : s.maxBoxes;
+    document.getElementById(view + "-max-volume").value = s.maxVolume==null ? "" : s.maxVolume;
+    document.getElementById(view + "-threshold").value = s.threshold;
+    document.getElementById(view + "-currency").value = appState.currency;
+    updateThresholdLabel(view);
+  }
+  function updateThresholdLabel(view){
+    var v = parseInt(document.getElementById(view + "-threshold").value, 10);
+    var label = v < 34 ? "muy flexible" : v < 67 ? "flexible" : v < 90 ? "estricta" : "muy estricta";
+    document.getElementById(view + "-threshold-label").textContent = label;
+  }
+
+  function runGeneration(view){
+    if(!appState.orders.length){ toast("Carga órdenes primero", "warn"); return; }
+    readSettingsFromForm(view); saveState();
+    var s = appState.views[view].settings;
+
+    var filterCountry = document.getElementById(view + "-filter-country").value.trim().toLowerCase();
+    var filterCity = document.getElementById(view + "-filter-city").value.trim().toLowerCase();
+
+    var included = [], excluded = [];
+    appState.orders.forEach(function(o){
+      var oCountry = (o.country || "").trim().toLowerCase();
+      var oCity = (o.city || "").trim().toLowerCase();
+      if(filterCountry && oCountry !== filterCountry){
+        excluded.push({order:o, reason:"No coincide con el filtro de País/Ciudad seleccionado"}); return;
+      }
+      if(filterCity && oCity !== filterCity){
+        excluded.push({order:o, reason:"No coincide con el filtro de País/Ciudad seleccionado"}); return;
+      }
+      if(s.typesIncluded[typeBucket(o.type)]) included.push(o);
+      else excluded.push({order:o, reason:"Tipo excluido de esta generación"});
+    });
+
+    var clusters = buildClusters(included, {
+      threshold: computeThreshold(s.threshold),
+      combineTypes: s.combineTypes,
+      maxStops: s.maxStops,
+      maxBoxes: s.maxBoxes,
+      maxVolume: s.maxVolume
+    });
+
+    var routes = [], unassignedExtra = [];
+    clusters.forEach(function(c){
+      if(c.length >= s.minStops) routes.push({id: nextRouteId(), orders: c, provider: ""});
+      else c.forEach(function(o){ unassignedExtra.push({order:o, reason:"No se encontraron suficientes direcciones cercanas (mínimo " + s.minStops + " paradas)"}); });
+    });
+    routes.sort(function(a,b){ return b.orders.length - a.orders.length; });
+
+    appState.views[view].generated = { routes: routes, unassigned: excluded.concat(unassignedExtra) };
+    saveState();
+    renderGenerated(view);
+    toast(routes.length + " rutas generadas, " + appState.views[view].generated.unassigned.length + " órdenes sin ruta", "success");
+    document.getElementById(view + "-results-area").scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  function allRouteOptionsHtml(view, currentRouteId){
+    var g = appState.views[view].generated;
+    var html = "";
+    g.routes.forEach(function(r, i){
+      html += '<option value="' + r.id + '"' + (r.id===currentRouteId?' selected':'') + '>Ruta ' + (i+1) + '</option>';
+    });
+    html += '<option value="unassigned"' + (currentRouteId==null?' selected':'') + '>Sin ruta</option>';
+    html += '<option value="__new__">+ Nueva ruta</option>';
+    return html;
+  }
+
+  function findOrderLocation(view, orderId){
+    var g = appState.views[view].generated;
+    for(var i=0;i<g.routes.length;i++){
+      var idx = g.routes[i].orders.findIndex(function(o){ return o.id === orderId; });
+      if(idx>-1) return {type:"route", route:g.routes[i], idx:idx};
+    }
+    var uidx = g.unassigned.findIndex(function(u){ return u.order.id === orderId; });
+    if(uidx>-1) return {type:"unassigned", idx:uidx};
+    return null;
+  }
+
+  function moveOrder(view, orderId, dest){
+    var g = appState.views[view].generated;
+    var loc = findOrderLocation(view, orderId);
+    if(!loc) return;
+    var orderObj;
+    if(loc.type === "route"){ orderObj = loc.route.orders.splice(loc.idx, 1)[0]; }
+    else { orderObj = g.unassigned.splice(loc.idx, 1)[0].order; }
+
+    if(dest === "unassigned"){
+      g.unassigned.push({order: orderObj, reason: "Movida manualmente fuera de ruta"});
+    } else if(dest === "__new__"){
+      g.routes.push({id: nextRouteId(), orders: [orderObj], provider: ""});
+    } else {
+      var r = g.routes.find(function(rt){ return rt.id === dest; });
+      if(r) r.orders.push(orderObj);
+      else g.unassigned.push({order: orderObj, reason: "Ruta destino no encontrada"});
+    }
+    g.routes = g.routes.filter(function(r){ return r.orders.length > 0; });
+    saveState();
+    renderGenerated(view);
+  }
+
+  function routeDominantType(route){
+    var types = {};
+    route.orders.forEach(function(o){ var t = typeBucket(o.type); types[t] = (types[t]||0)+1; });
+    var keys = Object.keys(types);
+    return keys.length === 1 ? keys[0] : "MIXTO";
+  }
+
+  function buildRouteMapsUrl(route){
+    var addrs = route.orders.map(function(o){
+      var parts = [o.address];
+      if(o.city) parts.push(o.city);
+      if(o.country) parts.push(o.country);
+      return parts.join(", ").trim();
+    }).filter(Boolean);
+    if(!addrs.length) return null;
+    if(addrs.length === 1){
+      return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(addrs[0]);
+    }
+    var origin = addrs[0];
+    var destination = addrs[addrs.length - 1];
+    var waypoints = addrs.slice(1, -1);
+    var url = "https://www.google.com/maps/dir/?api=1&travelmode=driving" +
+      "&origin=" + encodeURIComponent(origin) +
+      "&destination=" + encodeURIComponent(destination);
+    if(waypoints.length){
+      url += "&waypoints=" + waypoints.map(encodeURIComponent).join("%7C");
+    }
+    return url;
+  }
+
+  function buildRouteText(route, index){
+    var typ = routeDominantType(route);
+    var typeLabel = typ === "MIXTO" ? "Tipos mixtos" : typ;
+    var zone = deriveZoneLabel(route.orders);
+    var totalBoxes = route.orders.reduce(function(s,o){ return s+o.boxes; }, 0);
+    var totalVol = route.orders.reduce(function(s,o){ return s+o.volume; }, 0);
+    var totalVal = route.orders.reduce(function(s,o){ return s+o.value; }, 0);
+    var lines = [];
+    lines.push("SOLICITUD DE RUTA " + (index!=null ? "#" + index : ""));
+    lines.push("Tipo de envío: " + typeLabel);
+    lines.push("Zona: " + zone);
+    if(route.provider) lines.push("Proveedor: " + route.provider);
+    lines.push("Fecha: " + new Date().toLocaleDateString("es-ES", {year:"numeric", month:"long", day:"numeric"}));
+    lines.push("Paradas: " + route.orders.length);
+    lines.push("Total cajas: " + formatNum(totalBoxes));
+    lines.push("Volumen total: " + formatNum(totalVol,2) + " m³");
+    lines.push("Valor declarado total: " + formatMoney(totalVal));
+    lines.push("");
+    lines.push("Detalle de órdenes:");
+    route.orders.forEach(function(o, i){
+      var loc = [o.country, o.city].filter(Boolean).join(", ");
+      lines.push((i+1) + ". Orden #" + o.orderNumber + " — " + o.address +
+        (loc ? " (" + loc + ")" : "") +
+        (o.seller ? " — Seller: " + o.seller : "") +
+        (o.status ? " — Estado: " + o.status : "") +
+        " — " + formatNum(o.boxes) + " cajas — " + formatNum(o.volume,2) + " m³ — " + formatMoney(o.value));
+    });
+    return lines.join("\n");
+  }
+
+  function buildUnassignedText(view){
+    var g = appState.views[view].generated;
+    var lines = ["ÓRDENES SIN RUTA ASIGNADA", "Fecha: " + new Date().toLocaleDateString("es-ES", {year:"numeric", month:"long", day:"numeric"}), "Total: " + g.unassigned.length, ""];
+    g.unassigned.forEach(function(u, i){
+      var loc = [u.order.country, u.order.city].filter(Boolean).join(", ");
+      lines.push((i+1) + ". Orden #" + u.order.orderNumber + " — " + u.order.address +
+        (loc ? " (" + loc + ")" : "") +
+        (u.order.seller ? " — Seller: " + u.order.seller : "") +
+        (u.order.status ? " — Estado: " + u.order.status : "") +
+        " — " + formatNum(u.order.boxes) + " cajas — " + formatNum(u.order.volume,2) + " m³ — " + formatMoney(u.order.value) + " — Motivo: " + u.reason);
+    });
+    return lines.join("\n");
+  }
+
+  function openConfirmModal(message, confirmLabel, onConfirm){
+    var root = document.getElementById("modal-root");
+    root.innerHTML =
+      '<div class="modal-backdrop" id="modal-backdrop">' +
+        '<div class="modal" style="max-width:400px;">' +
+          '<div>' + escapeHtml(message) + '</div>' +
+          '<div style="display:flex; justify-content:flex-end; gap:8px;">' +
+            '<button class="btn btn-sm" id="confirm-cancel">Cancelar</button>' +
+            '<button class="btn btn-sm btn-danger" id="confirm-ok">' + escapeHtml(confirmLabel) + '</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    function close(){ root.innerHTML = ""; }
+    document.getElementById("confirm-cancel").addEventListener("click", close);
+    document.getElementById("confirm-ok").addEventListener("click", function(){ close(); onConfirm(); });
+    document.getElementById("modal-backdrop").addEventListener("click", function(e){ if(e.target.id === "modal-backdrop") close(); });
+  }
+
+  function openCopyModal(text, title){
+    var root = document.getElementById("modal-root");
+    root.innerHTML =
+      '<div class="modal-backdrop" id="modal-backdrop">' +
+        '<div class="modal">' +
+          '<div class="modal-head"><strong>' + escapeHtml(title) + '</strong><button class="btn btn-sm" id="modal-close">Cerrar</button></div>' +
+          '<div class="modal-status" id="modal-status">Preparando...</div>' +
+          '<textarea id="modal-textarea" readonly></textarea>' +
+        '</div>' +
+      '</div>';
+    var ta = document.getElementById("modal-textarea");
+    ta.value = text;
+    var statusEl = document.getElementById("modal-status");
+    document.getElementById("modal-close").addEventListener("click", function(){ root.innerHTML = ""; });
+    document.getElementById("modal-backdrop").addEventListener("click", function(e){ if(e.target.id === "modal-backdrop") root.innerHTML = ""; });
+
+    function fallbackSelect(){
+      ta.focus(); ta.select();
+      statusEl.textContent = "Selecciona el texto y copia con Ctrl+C (o Cmd+C en Mac).";
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){
+        statusEl.textContent = "✓ Copiado al portapapeles automáticamente.";
+        toast("Detalle copiado al portapapeles", "success");
+      }).catch(fallbackSelect);
+    } else {
+      fallbackSelect();
+    }
+  }
+
+  function renderGenerated(view){
+    var area = document.getElementById(view + "-results-area");
+    var g = appState.views[view].generated;
+    if(!g || (!g.routes.length && !g.unassigned.length)){
+      area.innerHTML = '<div class="empty-state"><strong>Todavía no has generado rutas</strong>Ajusta la configuración y presiona "Generar rutas".</div>';
+      return;
+    }
+    var totalOrders = g.routes.reduce(function(s,r){ return s+r.orders.length; }, 0) + g.unassigned.length;
+
+    var html = '<div class="stat-row">' +
+      '<div class="stat-tile"><div class="stat-label">Órdenes procesadas</div><div class="stat-value">' + totalOrders + '</div></div>' +
+      '<div class="stat-tile"><div class="stat-label">Rutas generadas</div><div class="stat-value accent">' + g.routes.length + '</div></div>' +
+      '<div class="stat-tile"><div class="stat-label">Sin ruta asignada</div><div class="stat-value' + (g.unassigned.length ? ' warn' : '') + '">' + g.unassigned.length + '</div></div>' +
+      '</div>';
+
+    html += '<div class="route-grid">';
+    g.routes.forEach(function(route, i){
+      var typ = routeDominantType(route);
+      var zone = deriveZoneLabel(route.orders);
+      var totalBoxes = route.orders.reduce(function(s,o){ return s+o.boxes; }, 0);
+      var totalVol = route.orders.reduce(function(s,o){ return s+o.volume; }, 0);
+      var totalVal = route.orders.reduce(function(s,o){ return s+o.value; }, 0);
+      var railClass = typ==="MIXTO" ? " mixed" : typ==="B2B ESTANDAR LOCAL" ? " type-local" : typ==="B2B DEDICADO" ? " type-dedicado" : typ==="B2B CARGO" ? " type-cargo" : "";
+      html += '<div class="route-card' + railClass + '" data-route-id="' + route.id + '">' +
+        '<div class="route-head">' +
+          '<div><div class="route-title">Ruta ' + (i+1) + '</div><div class="route-zone">' + escapeHtml(zone) + '</div></div>' +
+          '<div class="route-chips">' +
+            (typ === "MIXTO" ? '<span class="badge badge-mixto">Mixto</span>' : '<span class="badge ' + typeBadgeClass(typ==="SIN TIPO"?null:typ) + '">' + escapeHtml(typeBadgeLabel(typ==="SIN TIPO"?null:typ)) + '</span>') +
+            '<span class="chip">' + route.orders.length + ' paradas</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="provider-field"><label for="prov-' + route.id + '">Proveedor</label><input type="text" id="prov-' + route.id + '" class="provider-input" data-route-id="' + route.id + '" value="' + escapeHtml(route.provider||"") + '" placeholder="Nombre del proveedor (opcional)"></div>' +
+        '<div class="table-wrap"><table>' +
+          '<thead><tr><th>N° Orden</th><th>Dirección</th><th>País</th><th>Ciudad</th><th>Seller</th><th>Estado</th><th class="num">Cajas</th><th class="num">Vol. m³</th><th class="num">Valor</th><th>Mover a</th></tr></thead>' +
+          '<tbody>' + route.orders.map(function(o){
+            return '<tr><td class="mono">' + escapeHtml(o.orderNumber) + '</td><td>' + escapeHtml(o.address) + '</td>' +
+              '<td>' + escapeHtml(o.country) + '</td><td>' + escapeHtml(o.city) + '</td><td>' + escapeHtml(o.seller) + '</td>' +
+              '<td>' + (o.status ? '<span class="chip">' + escapeHtml(o.status) + '</span>' : '') + '</td>' +
+              '<td class="num">' + formatNum(o.boxes) + '</td><td class="num">' + formatNum(o.volume,2) + '</td><td class="num">' + formatMoney(o.value) + '</td>' +
+              '<td><select class="move-select" data-order-id="' + o.id + '">' + allRouteOptionsHtml(view, route.id) + '</select></td></tr>';
+          }).join("") + '</tbody>' +
+          '<tfoot><tr><td colspan="6">Totales</td><td class="num">' + formatNum(totalBoxes) + '</td><td class="num">' + formatNum(totalVol,2) + '</td><td class="num">' + formatMoney(totalVal) + '</td><td></td></tr></tfoot>' +
+        '</table></div>' +
+        '<div class="route-actions">' +
+          (function(){
+            var mapsUrl = buildRouteMapsUrl(route);
+            return mapsUrl
+              ? '<a class="btn btn-sm" href="' + escapeHtml(mapsUrl) + '" target="_blank" rel="noopener noreferrer">Ver ruta en Google Maps</a>'
+              : '<button class="btn btn-sm" disabled>Ver ruta en Google Maps</button>';
+          })() +
+          '<button class="btn btn-primary btn-sm btn-copy-route" data-route-id="' + route.id + '">Copiar detalle para proveedor</button>' +
+        '</div>' +
+      '</div>';
+    });
+    html += '</div>';
+
+    html += '<div class="unassigned-panel">' +
+      '<div class="unassigned-head"><div><div class="card-title" style="margin-bottom:0;">Órdenes sin ruta asignada</div><div class="card-hint" style="margin-bottom:0;">Estas órdenes no cumplieron el mínimo de cercanía, capacidad o filtro de tipo.</div></div>' +
+      (g.unassigned.length ? '<button class="btn btn-sm" id="' + view + '-btn-copy-unassigned">Copiar lista</button>' : '') +
+      '</div>';
+    if(g.unassigned.length){
+      html += '<div class="table-wrap"><table><thead><tr><th>N° Orden</th><th>Dirección</th><th>País</th><th>Ciudad</th><th>Seller</th><th>Estado</th><th class="num">Cajas</th><th class="num">Vol. m³</th><th class="num">Valor</th><th>Motivo</th><th>Mover a</th></tr></thead><tbody>' +
+        g.unassigned.map(function(u){
+          return '<tr><td class="mono">' + escapeHtml(u.order.orderNumber) + '</td><td>' + escapeHtml(u.order.address) + '</td>' +
+            '<td>' + escapeHtml(u.order.country) + '</td><td>' + escapeHtml(u.order.city) + '</td><td>' + escapeHtml(u.order.seller) + '</td>' +
+            '<td>' + (u.order.status ? '<span class="chip">' + escapeHtml(u.order.status) + '</span>' : '') + '</td>' +
+            '<td class="num">' + formatNum(u.order.boxes) + '</td><td class="num">' + formatNum(u.order.volume,2) + '</td><td class="num">' + formatMoney(u.order.value) + '</td>' +
+            '<td><span class="chip">' + escapeHtml(u.reason) + '</span></td>' +
+            '<td><select class="move-select" data-order-id="' + u.order.id + '">' + allRouteOptionsHtml(view, null) + '</select></td></tr>';
+        }).join("") + '</tbody></table></div>';
+    } else {
+      html += '<div class="card-hint" style="margin:0;">No hay órdenes pendientes: todas quedaron asignadas a una ruta.</div>';
+    }
+    html += '</div>';
+
+    area.innerHTML = html;
+
+    area.querySelectorAll(".move-select").forEach(function(sel){
+      sel.addEventListener("change", function(){
+        moveOrder(view, sel.dataset.orderId, sel.value);
+      });
+    });
+    area.querySelectorAll(".provider-input").forEach(function(inp){
+      inp.addEventListener("change", function(){
+        var r = appState.views[view].generated.routes.find(function(rt){ return rt.id === inp.dataset.routeId; });
+        if(r){ r.provider = inp.value; saveState(); }
+      });
+    });
+    area.querySelectorAll(".btn-copy-route").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var idx = appState.views[view].generated.routes.findIndex(function(r){ return r.id === btn.dataset.routeId; });
+        var route = appState.views[view].generated.routes[idx];
+        openCopyModal(buildRouteText(route, idx+1), "Detalle de ruta " + (idx+1));
+      });
+    });
+    var copyUnassignedBtn = document.getElementById(view + "-btn-copy-unassigned");
+    if(copyUnassignedBtn){
+      copyUnassignedBtn.addEventListener("click", function(){
+        openCopyModal(buildUnassignedText(view), "Órdenes sin ruta asignada");
+      });
+    }
+  }
+
+  // ---------- tabs wiring ----------
+  document.querySelectorAll(".tab-btn").forEach(function(btn){
+    btn.addEventListener("click", function(){ switchTab(btn.dataset.tab); });
+  });
+
+  // ---------- init ----------
+  loadState();
+  renderRouteViewShells();
+  ROUTE_VIEWS.forEach(function(v){ applySettingsToForm(v.id); });
+  renderOrdersTable();
+  ROUTE_VIEWS.forEach(function(v){ renderGenerated(v.id); });
+})();
+</script>
