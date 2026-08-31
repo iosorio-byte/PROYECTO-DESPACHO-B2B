@@ -1744,9 +1744,10 @@
       lines.push("# Orden: " + o.orderNumber);
       lines.push("Seller: " + (o.seller || ""));
       lines.push("");
+      lines.push("");
+      lines.push("Firma Recibido");
+      lines.push("");
     });
-    lines.push("______________________________");
-    lines.push("FIRMA RECIBIDO");
     return lines.join("\n");
   }
 
